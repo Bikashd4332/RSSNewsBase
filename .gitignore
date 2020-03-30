@@ -18,3 +18,6 @@
 /log/*
 !/log/.keep
 /tmp
+
+# Do not include if  accidentally found any *.swp files
+*.swp

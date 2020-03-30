@@ -2,6 +2,7 @@ default: &default
   adapter: mysql2
   pool: 5
   timeout: 5000
+  socket: /var/run/mysqld/mysqld.sock
   username: bikash
   password: mindfire
 
@@ -11,8 +12,8 @@ development:
 
 test:
   <<: *default
-  database: rssnewsbasedb
+  database: rssnewsbasedbtest
 
 production:
   <<: *default
-  database: rssnewsbasedb
+  database: rssnewsbasedbprod
