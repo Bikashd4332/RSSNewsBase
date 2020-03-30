@@ -1,0 +1,18 @@
+default: &default
+  adapter: mysql2
+  pool: 5
+  timeout: 5000
+  username: bikash
+  password: mindfire
+
+development:
+  <<: *default
+  database: rssnewsbasedb
+
+test:
+  <<: *default
+  database: rssnewsbasedb
+
+production:
+  <<: *default
+  database: rssnewsbasedb
