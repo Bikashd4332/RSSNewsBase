@@ -14,4 +14,9 @@ JWT::Auth.configure do |config|
   #
   config.secret = Rails.application.secrets.secret_key_base
 
+  ##
+  # Model responsible for JWT
+  #
+  config.model = 'User'
+
 end

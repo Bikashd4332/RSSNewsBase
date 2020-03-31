@@ -8,14 +8,13 @@ class TokensController < ApplicationController
   # Set the user up for authentication
   before_action :set_user
 
-
-
   ##
   # POST /token
   # Sign in the user
-  def create
+  def sign_in
     set_refresh_token @user
 
+    logger.info("Successfully Signed in user:#{@user.id}")
     render json: { completed: true }
   end
 
@@ -23,16 +22,19 @@ class TokensController < ApplicationController
   ##
   # PATCH /token
   # renew access token
-  def update
+  def refresh
     set_access_token
 
+    logger.info("Successfully refreshed/created access token.")
     render json: { completed: true }
   end
+
 
   private
   def set_user
     if params[:email] == User::DEFAULT_USER_EMAIL
       @user = User.get_default_user 
+      logger.warn("Authenticating default user!")
     else
       @user = User.find_by_email params[:email]
       raise JWT::Auth::UnaouthorizedError if @user
