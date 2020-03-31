@@ -32,12 +32,14 @@ class TokensController < ApplicationController
 
   private
   def set_user
+
     if params[:email] == User::DEFAULT_USER_EMAIL
       @user = User.get_default_user 
       logger.warn("Authenticating default user!")
     else
-      @user = User.find_by_email params[:email]
-      raise JWT::Auth::UnaouthorizedError if @user
+      @user = User.find_by current_user.id
+      raise JWT::Auth::UnauthorizedError unless @user
     end
+
   end
 end

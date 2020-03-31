@@ -5,13 +5,15 @@ class CategoriesController < ApplicationController
   # Validate access token on all actions
   before_action :validate_access_token
 
+  # Set @category on action call
+  before_action :set_category, only: [:update, :destroy]
+
   ## 
   # GET /categories
   #
   # List all the categories present in the categories
   # table
   def index
-    render json: { completed: true, data: [] }, status: 200
   end
 
   ##
@@ -33,6 +35,19 @@ class CategoriesController < ApplicationController
   #
   # Delete a specific category
   def destroy
+  end
+
+  private
+  ##
+  # Strict parameters
+  def category_params
+    params.require(:category).permit(:id, :title)
+  end
+
+  ##
+  # load from db
+  def set_category
+    @category = Category.find_by category_params[:id]
   end
 
 end
