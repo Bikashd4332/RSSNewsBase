@@ -15,7 +15,7 @@ class TokensController < ApplicationController
     set_refresh_token @user
 
     logger.info("Successfully Signed in user:#{@user.id}")
-    render json: { completed: true }
+    render json: { user: @user }, status: :ok
   end
 
 
@@ -26,14 +26,14 @@ class TokensController < ApplicationController
     set_access_token
 
     logger.info("Successfully refreshed/created access token.")
-    render json: { completed: true }
+    head :ok
   end
 
 
   private
   def set_user
 
-    if params[:email] == User::DEFAULT_USER_EMAIL
+    if (params[:email] || current_user.try(:email)) == User::DEFAULT_USER_EMAIL
       @user = User.get_default_user 
       logger.warn("Authenticating default user!")
     else

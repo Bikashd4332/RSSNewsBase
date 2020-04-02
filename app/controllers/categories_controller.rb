@@ -14,6 +14,9 @@ class CategoriesController < ApplicationController
   # List all the categories present in the categories
   # table
   def index
+    @categories = Category.all
+
+    render :index, status: :ok
   end
 
   ##
@@ -21,6 +24,14 @@ class CategoriesController < ApplicationController
   #
   # Create a news category
   def create
+    @category = Category.new category_params
+
+    if @category.save?
+      logger.info "New category #{@category.name} is saved."
+      redirect_to :index, status: :created
+    else
+      render json: { errors: @category.errors }, status: :bad_request
+    end
   end
 
   ##
@@ -28,6 +39,12 @@ class CategoriesController < ApplicationController
   #
   # Update info of a specific category
   def update
+    if @category.update category_params
+      logger.info "Category #{@category.id} is updated."
+      render :show, status: :ok
+    else
+      render json: { errors: @category.errors }, status: :bad_request
+    end
   end
 
   ##
@@ -35,13 +52,19 @@ class CategoriesController < ApplicationController
   #
   # Delete a specific category
   def destroy
+    if @category.destroy
+      logger.warn "Category #{@category.id} is deleted!"
+      head :ok
+    else
+      head :bad_request
+    end
   end
 
   private
   ##
   # Strict parameters
   def category_params
-    params.require(:category).permit(:id, :title)
+    params.require(:category).permit(:id, :title, :description)
   end
 
   ##

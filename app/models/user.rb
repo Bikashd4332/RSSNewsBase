@@ -2,11 +2,8 @@ class User < ActiveRecord::Base
   include JWT::Auth::Authenticatable
 
   ##
-  # Server-side Validation
-  # ######################
-  validates_presence_of :name,
-                        :email,
-                        :password
+  # ActiveRecord validations
+  validates_presence_of :name, :email, :password
 
   validates_format_of :email,
                       with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i,
@@ -17,8 +14,6 @@ class User < ActiveRecord::Base
                       message: " Password should be of minimum length 8 and maximum 20"
 
   validates_confirmation_of :password
-  #################################
-
 
   DEFAULT_USER_EMAIL = 'user@default.com'
 
@@ -26,11 +21,11 @@ class User < ActiveRecord::Base
   # Logic to retrieve the the user from JWT
   # payload.
   #
-  # param params => { :id, :token_version, ..}
+  # param :params => { :id, :token_version, ..}
   def self.find_by_token(params)
-    if params[:id] == -1
-      return self.get_default_user
-    end
+    # if id matched to -1 then consider it 
+    # to be the default user.
+    return self.get_default_user if params[:id] == -1
     find_by params[:id]
   end
 
@@ -39,6 +34,7 @@ class User < ActiveRecord::Base
   # for the system.
   def self.get_default_user
     User.new(
+      name: 'default',
       email: DEFAULT_USER_EMAIL,
       password: Rails.application.secrets.default_user_password,
       id: -1,

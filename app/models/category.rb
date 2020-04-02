@@ -2,11 +2,18 @@ class Category < ActiveRecord::Base
 
   ##
   # ActiveRecord Associations declaration
-  has_many :news
-  has_many :agency_feed
+  has_many :news, through: :agency_feeds
+  has_many :agency_feeds
   
   ##
   # ActiveRecord Validations
-  validates_presence_of :title
+  validates_presence_of :title, :description
+  validates_length_of :title, within: 2..20
+  validates_length_of :description, within: 2..40
+  validates_associated  :news,
+    if: Proc.new {|category| category.news.length > 0}
+
+  validates_associated  :agency_feeds,
+    if: Proc.new {|category| category.agency_feeds.length > 0 }
 
 end

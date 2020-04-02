@@ -14,6 +14,8 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 # JWT Authentication 
 gem 'jwt-auth', '~> 5.0.1'
+# Feedzirra is for fetching and parsing RSS feeds.
+gem "feedjira", "~> 3.1"
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -37,3 +39,7 @@ group :development do
   gem 'spring'
 end
 
+
+gem "api-pagination", "~> 4.8"
+
+gem "will_paginate", "~> 3.3"

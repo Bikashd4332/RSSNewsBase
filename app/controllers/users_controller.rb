@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   before_action :set_user, except: :create
 
   ##
-  # Make sure that thereis no logged in user
+  # Make sure that there is no logged in user
   before_action :no_current_user, only: :create
 
 
@@ -19,7 +19,6 @@ class UsersController < ApplicationController
   # Create a new user with given post data
   # and store.
   def create
-    byebug
     @user = User.new user_params
 
       unless @user.save
@@ -31,10 +30,9 @@ class UsersController < ApplicationController
         # issue a refresh token with that the 
         # user will request an access token.
         set_refresh_token @user
-        head :created
+        render :show, status :created
       end
   end
-
 
   ##
   # PATCH/PUT /user/:id.json
@@ -43,7 +41,7 @@ class UsersController < ApplicationController
   def update
     if @user.update user_params
       logger.info "Account updation succeed! #{@user.id}."
-      head :ok
+      render :show, status: :ok
     else
       render json: { error: @user.errors }, status: :bad_request
     end
