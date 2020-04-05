@@ -1,6 +1,6 @@
 class CategoriesController < ApplicationController
-  # Require token for protected actions
-  before_action :require_token
+  # Require token for protected actions 
+  before_action :require_token 
 
   # Validate access token on all actions
   before_action :validate_access_token
@@ -15,7 +15,6 @@ class CategoriesController < ApplicationController
   # table
   def index
     @categories = Category.all
-
     render :index, status: :ok
   end
 
@@ -24,14 +23,9 @@ class CategoriesController < ApplicationController
   #
   # Create a news category
   def create
-    @category = Category.new category_params
-
-    if @category.save?
-      logger.info "New category #{@category.name} is saved."
-      redirect_to :index, status: :created
-    else
-      render json: { errors: @category.errors }, status: :bad_request
-    end
+    @category = Category.create! category_params
+    logger.info "New category #{@category.name} is saved."
+    render :show, status: :created
   end
 
   ##
@@ -39,12 +33,9 @@ class CategoriesController < ApplicationController
   #
   # Update info of a specific category
   def update
-    if @category.update category_params
-      logger.info "Category #{@category.id} is updated."
-      render :show, status: :ok
-    else
-      render json: { errors: @category.errors }, status: :bad_request
-    end
+    @category.update! category_params
+    logger.info "Category #{@category.id} is updated."
+    render :show, status: :ok
   end
 
   ##
@@ -52,12 +43,9 @@ class CategoriesController < ApplicationController
   #
   # Delete a specific category
   def destroy
-    if @category.destroy
-      logger.warn "Category #{@category.id} is deleted!"
-      head :ok
-    else
-      head :bad_request
-    end
+    @category.destroy!
+    logger.warn "Category #{@category.id} is deleted!"
+    head :ok
   end
 
   private
@@ -70,7 +58,7 @@ class CategoriesController < ApplicationController
   ##
   # load from db
   def set_category
-    @category = Category.find_by category_params[:id]
+    @category = Category.find category_params[:id]
   end
 
 end

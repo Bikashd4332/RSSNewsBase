@@ -19,5 +19,12 @@
 !/log/.keep
 /tmp
 
+# Ignore .byebug_history and .rvmrc
+/.byebug_history
+/.rvmrc*
+
+# Ignore all the static files inside public
+/public/**
+
 # Do not include if  accidentally found any *.swp files
 *.swp

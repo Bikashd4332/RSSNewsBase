@@ -19,19 +19,14 @@ class UsersController < ApplicationController
   # Create a new user with given post data
   # and store.
   def create
-    @user = User.new user_params
-
-      unless @user.save
-        render json: { errors: @user.errors }, status: :bad_request
-      else
-        logger.info "New User with id #{@user.id} has been saved."
-        #
-        # log-in the user immediately after sign-up
-        # issue a refresh token with that the 
-        # user will request an access token.
-        set_refresh_token @user
-        render :show, status :created
-      end
+    @user = User.create! user_params
+    logger.info "New User with id #{@user.id} has been saved."
+    #
+    # log-in the user immediately after sign-up
+    # issue a refresh token with that the 
+    # user will request an access token.
+    set_refresh_token @user
+    render :show, status :created
   end
 
   ##

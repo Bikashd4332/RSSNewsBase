@@ -15,7 +15,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # JWT Authentication 
 gem 'jwt-auth', '~> 5.0.1'
 # Feedzirra is for fetching and parsing RSS feeds.
-gem "feedjira", "~> 3.1"
+gem 'feedjira', '~> 3.1'
+# Carrierwave gem for file upload
+gem 'carrierwave', '~> 1.0'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

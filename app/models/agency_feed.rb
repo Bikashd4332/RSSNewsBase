@@ -1,13 +1,26 @@
 class AgencyFeed < ActiveRecord::Base
+  include ActiveModel::Validations
+
   ##
   # Active record associations
-  has_many :news
+  has_many   :news
   belongs_to :category
   belongs_to :agency
 
   ##
   # ActiveRecord validation
   validates_presence_of :url, :agency_id, :category_id
+
+  ##
+  # Url validation with custom validator
+  validates_with Validators::UrlValidator
+
+  ##
+  # For every category_id agency_id should be unique
+  validates_uniqueness_of :agency_id, scope: :category_id
+
+  ##
+  # After validation of itself run it for associations.
   validates_associated :category,
     if: Proc.new {|af| !af.category.nil? and af.category.new_record?}
 
@@ -19,6 +32,6 @@ class AgencyFeed < ActiveRecord::Base
   
   ##
   # Delegation of property
-  delegate :title, to: :category, prefix: true
-  delegate :name, to: :agency, prefix: true
+  delegate :id, :title, to: :category, prefix: true
+  delegate :id, :name,  to: :agency,   prefix: true
 end

@@ -9,7 +9,7 @@ categories = [
 ]
 
 categories.each do |category|
-#  Category.create category
+  Category.create category
 end
 
 
@@ -22,7 +22,7 @@ agencies = [
 ]
 
 agencies.each do |agency|
-#  Agency.create agency
+  Agency.create agency
 end
 
 ##
@@ -34,7 +34,7 @@ agency_feeds = [
 ]
 
 agency_feeds.each do |af|
-#  AgencyFeed.create af
+  AgencyFeed.create af
 end
 
 ##

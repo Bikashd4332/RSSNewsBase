@@ -14,5 +14,29 @@ Rails.application.routes.draw do
 
   ##
   # GET, PUT, POST, PATCH, DELETE for users
-  resources :users
+  resources :users, except: [:destroy, :new]
+
+  ##
+  # GET, POST, PUT/PATCH
+  resources :agencyfeeds, except: [:destroy, :new] do
+    member do
+      get 'fetch_news'
+    end
+  end
+
+  ##
+  # GET, POST
+  resources :news, only: [:index, :new] do
+    collection do
+      # accetps id in request body.
+      post 'show'
+      # fetched all the latest news from agency.
+      get 'fetch'
+    end
+  end
+
+  ##
+  # GET, POST, DELETE, PATCH/PUT
+  resources :agencies
+
 end
