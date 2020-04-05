@@ -28,3 +28,10 @@
 
 # Do not include if  accidentally found any *.swp files
 *.swp
+
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity

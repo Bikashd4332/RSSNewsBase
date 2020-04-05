@@ -18,6 +18,9 @@ gem 'jwt-auth', '~> 5.0.1'
 gem 'feedjira', '~> 3.1'
 # Carrierwave gem for file upload
 gem 'carrierwave', '~> 1.0'
+# React intergration
+gem 'webpacker'
+gem 'react-rails'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
