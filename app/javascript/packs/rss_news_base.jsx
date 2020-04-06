@@ -9,7 +9,9 @@ import ReactDOM from 'react-dom'
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-    <App />,
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
     document.body.appendChild(document.createElement('div')),
   )
 })
