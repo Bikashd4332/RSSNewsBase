@@ -13,7 +13,7 @@ import {
 
 // Icon Import
 import MoreIcon from "@material-ui/icons/MoreVert";
-import MailIcon from "@material-ui/icons/Mail";
+import BrightnessIcon from "@material-ui/icons/Brightness4";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import AccountCircleIcon  from "@material-ui/icons/AccountCircle";
 import NotificationsIcon  from "@material-ui/icons/Notifications";
@@ -75,6 +75,14 @@ export default function NavbarClickables( props ) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  // handler will be called to set the theme preference
+  // onClick of brightness icon.
+  const handleThemeChange = () => {
+    props.setThemePreference(
+      (props.themePreference === 'dark')? 'light' : 'dark'
+    );
+  }
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -102,35 +110,51 @@ export default function NavbarClickables( props ) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
+      <MenuItem onClick={handleThemeChange} >
+        <IconButton
+        aria-label="change theme"
+        color="inherit"
+        >
+            <BrightnessIcon />
         </IconButton>
-        <p>Messages</p>
+        <p>Theme</p>
       </MenuItem>
       <MenuItem>
         <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
+          <Badge badgeContent={0} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
 
+      {isLoggedIn &&
+        <MenuItem onClick={handleProfileMenuOpen}>
+          <IconButton
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+            <AccountCircleIcon />
+          </IconButton>
+          <p>Profile</p>
+        </MenuItem>
+      }
 
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircleIcon />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+      {!isLoggedIn &&
+        <MenuItem onClick={handleMenuClose}
+          component={Link}
+          to={'/signin'}>
+          <IconButton
+            aria-label="login button"
+            color="inherit"
+          >
+            <ExitToAppIcon />
+          </IconButton>
+          <p>Sign In</p>
+        </MenuItem>
+      }
     </Menu>
   );
 
@@ -138,7 +162,16 @@ export default function NavbarClickables( props ) {
     <>
       {/* Menu items on navbar on desktiop view */}
       <div className={classes.sectionDesktop}>
-        <IconButton aria-label="show 17 new notifications" color="inherit">
+
+        <IconButton
+          aria-label="change theme"
+          color="inherit"
+          onClick={handleThemeChange}
+          >
+            <BrightnessIcon />
+          </IconButton>
+
+        <IconButton aria-label="show notifications" color="inherit">
           <Badge badgeContent={props.notificationCounts} color="secondary">
             <NotificationsIcon />
           </Badge>

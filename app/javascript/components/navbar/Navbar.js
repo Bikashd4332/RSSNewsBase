@@ -2,6 +2,7 @@ import React from 'react';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, InputBase, Avatar, Container } from '@material-ui/core';
+import { Link } from "react-router-dom";
 import SearchIcon from '@material-ui/icons/Search'
 
 import UserLoginStateContext from "../contexts/UserLoginStatecontext";
@@ -65,11 +66,13 @@ export default function Navbar(props) {
       <AppBar position="static"
         color="inherit">
         {/* Keep items inside navbar aligned */}
-        <Container maxWidth="lg">
+        <Container maxWidth="md">
         {/* The use of toolbar is to give layout to menus. */}
           <Toolbar variant="dense">
             <div className={classes.logo}>
-              <Avatar variant="square" src={Logo} />
+              <Link to={"/"}>
+                <Avatar variant="square" src={Logo} />
+              </Link>
             </div>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
@@ -87,7 +90,13 @@ export default function Navbar(props) {
             <div className={classes.grow} />
 
             <UserLoginStateContext.Consumer>
-              { (loginStateProps) => <NavbarClickables {...loginStateProps} />}
+              { (loginStateProps) =>
+                  <NavbarClickables
+                    setThemePreference={props.setThemePreference}
+                    themePreference={props.themePreference}
+                    {...loginStateProps}
+                  />
+                }
             </UserLoginStateContext.Consumer>
 
           </Toolbar>
