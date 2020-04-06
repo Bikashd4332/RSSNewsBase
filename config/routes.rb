@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  root to: 'static#index'
   namespace :api  do
     namespace :v1 do
       ##
@@ -7,7 +6,7 @@ Rails.application.routes.draw do
       post '/tokens', to: 'tokens#sign_in'
 
       ##
-      # Issue access tokens on refresh token 
+      # Issue access tokens on refresh token
       # Also used to refresh access token
       put '/tokens', to: 'tokens#refresh'
 
@@ -43,4 +42,12 @@ Rails.application.routes.draw do
       resources :agencies
     end
   end
+
+  ##
+  # Forward all the requests to static controller unless its an api
+  # request.
+  get '*page', to: 'static#index', constraint: ->(req) do
+    !req.xhr? && req.format.html?
+  end
+  root to: 'static#index'
 end

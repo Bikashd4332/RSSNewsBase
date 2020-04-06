@@ -3,7 +3,9 @@ import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import { CssBaseline, createMuiTheme, ThemeProvider } from "@material-ui/core";
 import 'typeface-roboto';
+
 import Navbar from "./navbar/Navbar";
+import SignIn from "./signin/SignIn"
 import UserLoginStateProvider from "./providers/UserLoginStateProvider";
 
 
@@ -29,6 +31,7 @@ export default function App() {
             themePreference={themePreference}
             />
         </UserLoginStateProvider>
+        <Route path={"/signin"} component={SignIn} />
       </ThemeProvider>
     </BrowserRouter>
   );
