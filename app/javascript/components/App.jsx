@@ -6,6 +6,7 @@ import 'typeface-roboto';
 
 import Navbar from "./navbar/Navbar";
 import SignIn from "./signin/SignIn"
+import SignUp from "./signup/SignUp"
 import UserLoginStateProvider from "./providers/UserLoginStateProvider";
 
 
@@ -32,6 +33,7 @@ export default function App() {
             />
         </UserLoginStateProvider>
         <Route path={"/signin"} component={SignIn} />
+        <Route path={"/signup"} component={SignUp} />
       </ThemeProvider>
     </BrowserRouter>
   );
