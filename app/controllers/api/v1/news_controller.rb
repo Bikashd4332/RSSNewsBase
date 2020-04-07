@@ -2,10 +2,10 @@ class Api::V1::NewsController < ApplicationController
 
   #
   # validate token on action
-  before_action :require_token
+  #before_action :require_token
 
   # Verify access token before action
-  before_action :validate_access_token
+  #before_action :validate_access_token
 
   # before action :show set news
   before_action :set_news, only: :show
@@ -13,14 +13,14 @@ class Api::V1::NewsController < ApplicationController
 
   ##
   # GET /news.json
-  # This action supports pagination of 
+  # This action supports pagination of
   # news records.
   def index
-    @news = News.all
+    @news = paginate News.all
     ##
     # Api paginate helper function which helps to
     # paginate records.
-    paginate json: @news, per_page: 20
+    render :index, status: :ok
   end
 
   ##

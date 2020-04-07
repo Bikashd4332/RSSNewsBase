@@ -33,9 +33,9 @@ export default function App() {
             themePreference={themePreference}
             />
         </UserLoginStateProvider>
+        <Route path={"/"} exact component={Dashboard} />
         <Route path={"/signin"} component={SignIn} />
         <Route path={"/signup"} component={SignUp} />
-        <Route path={"/dashboard"} component={Dashboard} />
       </ThemeProvider>
     </BrowserRouter>
   );

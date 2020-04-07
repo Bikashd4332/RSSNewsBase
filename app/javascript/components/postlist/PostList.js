@@ -1,19 +1,18 @@
-import React from "react";
+import React, { useReducer, useEffect, useState } from "react";
 import {
   Grid,
   Card,
   CardContent,
   Typography,
   makeStyles,
-  Avatar } from "@material-ui/core";
+  Avatar,
+  Button,
+} from "@material-ui/core";
+import Skeleton from "@material-ui/lab/Skeleton";
 import RssFeedIcon from "@material-ui/icons/RssFeed";
 
-const newsPosts = [
-  {title: 'Lorem impsum amit getor seni silae ginad.', description: "industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.", agency: 'Times of India', url: 'https://timesofindia.hindustantimes.com' },
-  {title: 'Lorem impsum amit getor seni silae ginad.', description: 'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum', agency: 'Times of India', url: 'https://timesofindia.hindustantimes.com' },
-  {title: 'Lorem impsum amit getor seni silae ginad.', description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).', agency: 'Times of India', url: 'https://timesofindia.hindustantimes.com' },
-  {title: 'Lorem impsum amit getor seni silae ginad.', description: 'Lorem impusm amit getor seni sila ginad iti semi mgedi ti aor senfo licker dakij.', agency: 'Times of India', url: 'https://timesofindia.hindustantimes.com' },
-]
+import EmptyBoxImg from '../../../../public/empty-box.png'
+import NewsFetchService from "../../services/NewsFetchService";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -37,15 +36,46 @@ const useStyle = makeStyles((theme) => ({
   },
   cardAvatar: {
     paddingRight: theme.spacing(1)
+  },
+  emptyStateImg: {
+    width: 320,
+    height: 320
   }
-
 }))
+
+const newsReducer = (state, action) => {
+  switch (action.type) {
+    case 'add':
+      return state.concat(action.data);
+  }
+}
 
 export default function PostList() {
   const classes = useStyle()
+  const [news, dispatchNews] = useReducer(newsReducer, [])
+  let [isLoading, setLoading] = useState(false);
+  let [isEmpty, setIsEmpty] = useState(false);
 
-  const cardListPopulate = (cardLists) => {
-    return cardLists.map((post, idx) => (
+  const handleNewsFetch = () => {
+    setLoading(true);
+    return NewsFetchService
+      .fetchNews()
+      .then(newsItems => {
+        if (newsItems.length === 0) {
+          setIsEmpty(true);
+        } else {
+          dispatchNews({ type: 'add', data: newsItems });
+          setLoading(false);
+        }
+      }).catch(reason => { throw reason })
+  }
+
+  useEffect(() => {
+    handleNewsFetch();
+  }, []);
+
+  const cardListPopulate = (newsList) => {
+    return newsList.map((post, idx) => (
       <Card elevation={3} className={classes.newsCards} key={idx}>
         <CardContent>
           <Grid container >
@@ -54,13 +84,13 @@ export default function PostList() {
                 <RssFeedIcon />
               </Avatar>
             </Grid>
-            <Grid item>
-            <Typography className={classes.title}>
-              {post.title}
-            </Typography>
-            <Typography className={classes.agency} gutterBottom>
-              {post.agency}
-            </Typography>
+            <Grid item xs={11}>
+              <Typography className={classes.title}>
+                {post.title}
+              </Typography>
+              <Typography className={classes.agency} gutterBottom>
+                {post.agency}
+              </Typography>
             </Grid>
           </Grid>
           <Typography paragraph className={classes.description}> {post.description} </Typography>
@@ -69,9 +99,62 @@ export default function PostList() {
     ))
   };
 
+  const showEmptyNews = () => (
+    <Card elevation={3} className={classes.newsCards}>
+      <CardContent>
+        <Grid container
+          justify="center"
+          alignContent="center"
+          alignItems="center"
+          direction="column"
+        >
+          <Grid item xs={7}>
+            <img src={EmptyBoxImg} className={classes.emptyStateImg} />
+          </Grid>
+          <Grid item >
+            <Typography paragraph color="textSecondary" align="center">
+              There is nothing here to show. Please add some categories and RSS providers and try fetching news again.
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Button onClick={handleNewsFetch}>Fetch News</Button>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
+
+  const showLoadingNews = () => {
+    return [1, 2, 3].map((num, array) => (
+    <Card elevation={3} className={classes.newsCards} key={num}>
+      <CardContent>
+        <Grid container >
+          <Grid item className={classes.cardAvatar}>
+            <Avatar variant="circle">
+              <RssFeedIcon />
+            </Avatar>
+          </Grid>
+          <Grid item xs={11}>
+            <Skeleton variant="text" animation={"wave"} />
+            <Skeleton variant="text" animation={"wave"} />
+          </Grid>
+        </Grid>
+        <Skeleton variant="text" animation={"wave"} />
+        <Skeleton variant="text" animation={"wave"} />
+        <Skeleton variant="text" animation={"wave"} />
+      </CardContent>
+    </Card>
+    ))
+  };
+
+
   return (
     <div className={classes.root}>
-      {cardListPopulate(newsPosts)}
+      { isLoading
+        ? showLoadingNews()
+        : isEmpty
+          ? showEmptyNews()
+          : cardListPopulate(news)}
     </div>
   );
 }

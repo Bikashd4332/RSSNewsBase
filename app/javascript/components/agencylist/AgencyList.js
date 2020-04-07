@@ -14,6 +14,7 @@ const useStyle = makeStyles((theme) => ({
     width: '100%',
     marginTop: theme.spacing(2),
     height: 350,
+    overflowY: "scroll"
    },
   smallHeader: {
     textAlign: "center",
