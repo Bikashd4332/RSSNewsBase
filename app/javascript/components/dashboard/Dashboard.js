@@ -3,6 +3,7 @@ import { Container , Grid, makeStyles, Hidden} from '@material-ui/core';
 
 import PostsList from "../postlist/PostList";
 import CategoryList from "../categorylist/CategoryList";
+import NavbarSearchContext from "../contexts/NavbarSearchContext";
 import AgencyList  from "../agencylist/AgencyList";
 
 const useStyle = makeStyles((theme) => ({
@@ -29,7 +30,9 @@ export default function Dashboard(){
             </Grid>
           </Hidden>
           <Grid item lg={8}>
-            <PostsList showPostsOf={category} />
+            <NavbarSearchContext.Consumer>
+              {(props) => <PostsList showPostsOf={category} {...props} /> }
+            </NavbarSearchContext.Consumer>
           </Grid>
         </Grid>
       </Container>

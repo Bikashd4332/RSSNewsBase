@@ -1,63 +1,30 @@
-import React from 'react';
-
-import { fade, makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, InputBase, Avatar, Container } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  InputBase,
+  Avatar,
+  Container,
+  withStyles,
+  } from '@material-ui/core';
 import { Link } from "react-router-dom";
 import SearchIcon from '@material-ui/icons/Search'
 
+import { styles } from "./NavbarStyles";
 import UserLoginStateContext from "../contexts/UserLoginStatecontext";
-
 import Logo from "../../../../public/logo.svg";
 import NavbarClickables from "./navcomponents/NavbarClickables";
 
-const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.black, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.black, 0.25),
-    },
-    marginRight: 0,
-    marginLeft: theme.spacing(2),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(4),
-      width: 'auto',
-    },
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '30ch',
-    },
-  }
-}));
+function Navbar(props) {
+  const { classes } = props;
+  const [ searchText, setSearchText ] = useState('');
+  const { setNavbarAction } = props;
 
-export default function Navbar(props) {
-  const classes = useStyles();
+  const handleDoSearch = e => {
+    // update the state navbar which is in parent component.
+    if (e.key === 'Enter')
+      setNavbarAction({ searchText: e.target.value });
+  }
 
   return (
     // The whole navbar div element
@@ -84,6 +51,9 @@ export default function Navbar(props) {
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
+                value={searchText}
+                onChange={e => setSearchText(e.target.value) }
+                onKeyDown={handleDoSearch}
                 inputProps={{ 'aria-label': 'search' }}
               />
             </div>
@@ -105,3 +75,5 @@ export default function Navbar(props) {
     </div>
   );
 }
+
+export default withStyles(styles)(Navbar)

@@ -12,28 +12,30 @@ import EmptyBoxImg from '../../../../public/empty-box.png'
 
 function PostEmpty(props) {
   const { classes } = props;
-  <Card elevation={3} className={classes.newsCards}>
-    <CardContent>
-      <Grid container
-        justify="center"
-        alignContent="center"
-        alignItems="center"
-        direction="column"
-      >
-        <Grid item xs={7}>
-          <img src={EmptyBoxImg} className={classes.emptyStateImg} />
+  return  (
+    <Card elevation={3} className={classes.newsCards}>
+      <CardContent>
+        <Grid container
+          justify="center"
+          alignContent="center"
+          alignItems="center"
+          direction="column"
+        >
+          <Grid item xs={7}>
+            <img src={EmptyBoxImg} className={classes.emptyStateImg} />
+          </Grid>
+          <Grid item >
+            <Typography paragraph color="textSecondary" align="center">
+              There is nothing here to show. Please add some categories and RSS providers and try fetching news again.
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Button onClick={props.handleNewsFetch}>Fetch News</Button>
+          </Grid>
         </Grid>
-        <Grid item >
-          <Typography paragraph color="textSecondary" align="center">
-            There is nothing here to show. Please add some categories and RSS providers and try fetching news again.
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Button onClick={props.handleNewsFetch}>Fetch News</Button>
-        </Grid>
-      </Grid>
-    </CardContent>
-  </Card>
+      </CardContent>
+    </Card>
+  );
 }
 
 export default withStyles(style)(PostEmpty);

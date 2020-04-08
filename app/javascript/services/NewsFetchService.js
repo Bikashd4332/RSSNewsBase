@@ -27,31 +27,43 @@ class ParsePaginationRespnseHeaders {
   cleanseUrl(url) {
     return url.replace('<', '').replace('>', '');
   }
-
 }
 
 class NewsFetchService {
 
   constructor() {
     // Setting variables up for pagination
+    this.newsData = [];
     this.hasMore = false;
     this.parsePagniation = null;
   }
 
   /* function for retrieving the list of news */
-  fetchNews() {
+  async fetchNews(searchString) {
+    // Initial request shoud use API, follow up request use nextUrl
+    let url = (this.parsePagniation)? this.parsePagniation.nextUrl : API;
 
-    // if we have nextUrl use it else API
-    const url = (this.parsePagniation)? this.parsePagniation.nextUrl : API;
-    return(
-      fetch(url)
-        .then(response => {
-          if (response.headers.has('Link'))
-            this.parsePagniation = new ParsePaginationRespnseHeaders(response.headers.get('Link'));
-            this.hasMore = (this.parsePagniation.nextUrl)? true : false;
-          return response.json();
-        })
-    );
+    // if the request is initial request and a searchString is given.
+    if (searchString && url === API )
+        url += '?find=' + searchString;
+    const newsItems = await fetch(url)
+      .then(response => {
+        if (response.headers.has('Link')) {
+          this.parsePagniation = new ParsePaginationRespnseHeaders(response.headers.get('Link'));
+          this.hasMore = (this.parsePagniation.nextUrl)? true : false;
+        }
+        return response.json();
+      })
+    // Remeber already fetched records for caching.
+    this.newsData.push(...newsItems)
+    return this.newsData;
+  }
+
+  clear() {
+    // clear all the states so that intermediate search can be done.
+    this.parsePagniation = null;
+    this.hasMore = false
+    this.newsData = [];
   }
 }
 

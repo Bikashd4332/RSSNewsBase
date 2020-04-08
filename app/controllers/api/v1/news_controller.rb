@@ -16,7 +16,16 @@ class Api::V1::NewsController < ApplicationController
   # This action supports pagination of
   # news records.
   def index
-    @news = paginate News.all
+    @news =
+      unless params[:find]
+        paginate News.all
+      else
+        paginate News.where(
+          "title LIKE ? OR description LIKE ?",
+            "%#{params[:find]}%",
+            "%#{params[:find]}%"
+         )
+      end
     ##
     # Api paginate helper function which helps to
     # paginate records.
