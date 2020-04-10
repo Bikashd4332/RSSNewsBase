@@ -10,25 +10,22 @@ class Api::V1::NewsController < ApplicationController
   # before action :show set news
   before_action :set_news, only: :show
 
+  ##
+  # News reducer for filtering based on query param.
+  NewsReducer = Rack::Reducer.new(
+    News.all,
+    ->(category:) { joins(:agency_feed).where('agency_feeds.category_id = ?', category)},
+    ->(find:) { where("title LIKE ? OR description LIKE ?", "%#{find}%", "%#{find}%")}
+  )
 
   ##
-  # GET /news.json
+  # GET /news?fetch=''&category=''.json
   # This action supports pagination of
   # news records.
   def index
-    @news =
-      unless params[:find]
-        paginate News.all
-      else
-        paginate News.where(
-          "title LIKE ? OR description LIKE ?",
-            "%#{params[:find]}%",
-            "%#{params[:find]}%"
-         )
-      end
     ##
-    # Api paginate helper function which helps to
-    # paginate records.
+    # This news reducer will filter news on given params.
+    @news = paginate NewsReducer.apply(params)
     render :index, status: :ok
   end
 

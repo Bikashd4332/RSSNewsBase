@@ -14,7 +14,9 @@ const useStyle = makeStyles((theme) => ({
 
 export default function Dashboard(){
   const classes = useStyle();
-  const  [category, setCategory] = useState('all');
+  // Represents the selected category id.
+  // Initially points to 0 which is for 'all'.
+  const  [category, setCategory] = useState(0);
   return (
     <>
       <Container maxWidth="md" className={classes.root} >

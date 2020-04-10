@@ -13,7 +13,7 @@ const useStyle = makeStyles((theme) => ({
   root: {
     width: '100%',
     marginTop: theme.spacing(2),
-    height: 350,
+    maxHeight: 350,
     overflowY: "scroll"
    },
   smallHeader: {
@@ -41,7 +41,7 @@ export default function AgencyList (props) {
           </ListItemIcon>
           <ListItemText
             primary={agency}
-            primaryTypographyProps={{ "variant": "caption" }}
+            primaryTypographyProps={{ "variant": "inherit" }}
           />
         </ListItem>
       ))}

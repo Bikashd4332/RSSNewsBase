@@ -1,4 +1,4 @@
-const API = '/api/v1/news.json'
+const API = '/api/v1/news.json';
 
 
 class ParsePaginationRespnseHeaders {
@@ -39,13 +39,25 @@ class NewsFetchService {
   }
 
   /* function for retrieving the list of news */
-  async fetchNews(searchString) {
+  async fetchNews(searchString, categoryId) {
+    let url = null;
+    let param = {};
     // Initial request shoud use API, follow up request use nextUrl
-    let url = (this.parsePagniation)? this.parsePagniation.nextUrl : API;
-
-    // if the request is initial request and a searchString is given.
-    if (searchString && url === API )
-        url += '?find=' + searchString;
+    if (this.parsePagniation) {
+      url = this.parsePagniation.nextUrl;
+    } else {
+      url = API;
+      // prepare query param.
+      if (categoryId !== 0) {
+        param.category = categoryId;
+      }
+      if (searchString) {
+        param.find = searchString
+      }
+    }
+    // Attach the prepared queryparam.
+    url += '?' + new URLSearchParams(param).toString();
+    // make reqeust and fetch data.
     const newsItems = await fetch(url)
       .then(response => {
         if (response.headers.has('Link')) {

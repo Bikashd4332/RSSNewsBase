@@ -1,21 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Paper,
   List,
-  ListItemText,
-  ListItem,
-  ListItemIcon,
-  makeStyles,
-  Typography } from "@material-ui/core";
-import LabelOutlinedIcon from "@material-ui/icons/LabelOutlined";
+  Typography,
+  makeStyles
+} from "@material-ui/core";
 
-const categoryLists = ["All", "Technology", "Sports", "Hollywood", "Bollywood", "Tollywood"]
+import CategoryFetchService from "../../services/CategoryFetchService";
+import { renderCategoryListItems, renderEmpty, renderLoading } from "./CategoryHelper";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     marginTop: theme.spacing(3),
-    height: 350,
+    maxHeight: 350,
     overflowY: "scroll"
   },
   smallHeader: {
@@ -25,25 +23,35 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     padding: theme.spacing(1)
   }
-}))
+}));
 
-export default function CategoryList(props) {
+export default function CategoryList({ selectedCategory, setCategory }) {
   const classes = useStyles();
+  const [categories, setCategories] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const renderCategoryListItems = (selectedCategory) => {
-    return (
-        <>
-          { categoryLists.map((category, idx) => (
-            <ListItem button key={idx} divider>
-             <ListItemIcon >
-              <LabelOutlinedIcon />
-             </ListItemIcon>
-             <ListItemText primary={category} primaryTypographyProps={{"variant": "caption"}} />
-            </ListItem>
-          ))}
-        </>
-      );
-  }
+  // TODO:- Remeber to test renderEmpty
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoading(true);
+      try {
+        const fetchedItems = await CategoryFetchService.fetch();
+        if (fetchedItems.length === 0) {
+          setIsEmpty(true);
+          setIsLoading(false);
+        } else {
+          setCategories(fetchedItems);
+          setIsLoading(false);
+          setIsEmpty(false);
+        }
+      } catch (error) {
+        throw error;
+      }
+    }
+    fetchCategories();
+  }, [])
 
   return (
     <>
@@ -55,7 +63,15 @@ export default function CategoryList(props) {
           Categories
         </Typography>
         <List component="nav">
-          {renderCategoryListItems(props.selectedCategory)}
+          {isLoading
+            ? renderLoading()
+            : isEmpty
+              ? renderEmpty()
+              : renderCategoryListItems (
+                categories,
+                selectedCategory,
+                setCategory
+              )}
         </List>
       </Paper>
     </>

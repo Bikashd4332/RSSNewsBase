@@ -2,9 +2,9 @@ class Category < ActiveRecord::Base
 
   ##
   # ActiveRecord Associations declaration
-  has_many :news, through: :agency_feeds
   has_many :agency_feeds
-  
+  has_many :news, through: :agency_feeds
+
   ##
   # ActiveRecord Validations
   validates_presence_of :title, :description

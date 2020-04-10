@@ -28,7 +28,7 @@ end
 ##
 # Third is to setup AgencyFeeds
 agency_feeds = [
-  { url: 'https://timesofindia.indiatimes.com/rssfeeds/4719148.cms', agency_id: Agency.first.id, category_id: Category.first.id },
+  { url: 'https://timesofindia.indiatimes.com/rssfeeds/5880659.cms', agency_id: Agency.first.id, category_id: Category.first.id },
   { url: 'https://www.hindustantimes.com/rss/sports/rssfeed.xml', agency_id: Agency.second.id, category_id: Category.second.id },
   { url: 'https://www.thehindu.com/sport/motorsport/feeder/default.rss', agency_id: Agency.third.id, category_id: Category.third.id }
 ]
@@ -40,5 +40,9 @@ end
 ##
 # Setting News up now
 AgencyFeed.all.each do |af|
-  News.fetch_and_store_news af
+  begin
+    News.fetch_and_store_news! af
+  rescue => exception
+    puts "Error in fetching! #{exception}."
+  end
 end

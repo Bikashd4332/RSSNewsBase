@@ -12,7 +12,7 @@ gem 'devise', '~> 4.7', '>= 4.7.1'
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
-# JWT Authentication 
+# JWT Authentication
 gem 'jwt-auth', '~> 5.0.1'
 # Feedzirra is for fetching and parsing RSS feeds.
 gem 'feedjira', '~> 3.1'
@@ -21,6 +21,8 @@ gem 'carrierwave', '~> 1.0'
 # React intergration
 gem 'webpacker'
 gem 'react-rails'
+# A gem which reduces records by using query param
+gem 'rack-reducer', require: 'rack/reducer'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

@@ -1,14 +1,14 @@
 class Api::V1::CategoriesController < ApplicationController
-  # Require token for protected actions 
-  before_action :require_token 
+  # Require token for protected actions
+  #before_action :require_token
 
   # Validate access token on all actions
-  before_action :validate_access_token
+  #before_action :validate_access_token
 
   # Set @category on action call
   before_action :set_category, only: [:update, :destroy]
 
-  ## 
+  ##
   # GET /categories
   #
   # List all the categories present in the categories

@@ -7,22 +7,21 @@ import PostLoading from "./PostLoading";
 import PostEmpty  from "./PostEmpty";
 import CardListInflator  from "./CardListInflator";
 
-function PostList(props) {
-  const { classes } = props;
+function PostList({ navbarActions, showPostsOf, classes }) {
 
   // news is the list of news that is fetched from Service.
   const [news, setNews] = useState([]);
   // booleans representing the states of empty or loading.
   const [isLoading, setLoading] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
-  const { searchText } = props.navbarActions
+  const { searchText } = navbarActions
 
   // for calling service func. for fetching news.
-  const handleNewsFetch = async (searchText) => {
+  const handleNewsFetch = async (searchText, categoryId) => {
     setLoading(true);
     try {
       // NewsFetchService remembers the previously fetched records.
-      const newsItems = await NewsFetchService.fetchNews(searchText);
+      const newsItems = await NewsFetchService.fetchNews(searchText, categoryId);
       if (newsItems.length === 0) {
         setLoading(false);
         setIsEmpty(true);
@@ -44,27 +43,23 @@ function PostList(props) {
     const prepareFetch = () => {
       // Pretend its a new fetch and forget all the previous.
       NewsFetchService.clear();
-      if (searchText !== '') {
-        handleNewsFetch(searchText);
-      } else {
-        handleNewsFetch();
-      }
+      handleNewsFetch(searchText, showPostsOf);
     }
     prepareFetch();
-  }, [searchText]);
+  }, [ searchText, showPostsOf ]);
 
 
   return (
     <div className={classes.root}>
       {/* Search text will show up here. */}
       <Typography component="h4" hidden={searchText === ''}>
-        Search Results for: {props.navbarActions.searchText}
+        Search Results for: { searchText }
       </Typography>
 
       { isLoading
         ? <PostLoading />
         : isEmpty
-          ? <PostEmpty handleNewsFetch={handleNewsFetch} />
+          ? <PostEmpty handleNewsFetch={handleNewsFetch} searchText={searchText} />
           : <CardListInflator newsList={news} />
       }
     </div>

@@ -10,8 +10,7 @@ import {
 import { style } from "./PostStyle";
 import EmptyBoxImg from '../../../../public/empty-box.png'
 
-function PostEmpty(props) {
-  const { classes } = props;
+function PostEmpty({ classes, handleNewsFetch, searchText }) {
   return  (
     <Card elevation={3} className={classes.newsCards}>
       <CardContent>
@@ -25,12 +24,15 @@ function PostEmpty(props) {
             <img src={EmptyBoxImg} className={classes.emptyStateImg} />
           </Grid>
           <Grid item >
-            <Typography paragraph color="textSecondary" align="center">
-              There is nothing here to show. Please add some categories and RSS providers and try fetching news again.
+            <Typography paragraph color="textSecondary" align="center" >
+              There is nothing here to show.
+              { (searchText)
+                ? " Please try searching with some different keywords."
+                : " Please add some categories and RSS providers and try fetching news again." }
             </Typography>
           </Grid>
           <Grid item>
-            <Button onClick={props.handleNewsFetch}>Fetch News</Button>
+            <Button onClick={handleNewsFetch}>Fetch News</Button>
           </Grid>
         </Grid>
       </CardContent>
