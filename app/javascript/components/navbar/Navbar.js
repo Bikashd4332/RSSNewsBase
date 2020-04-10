@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -21,11 +22,15 @@ function Navbar(props) {
   const { classes } = props;
   const [searchText, setSearchText] = useState('');
   const { setNavbarAction } = props;
+  const history = useHistory();
 
   const handleDoSearch = e => {
     // update the state navbar which is in parent component.
-    if (e.key === 'Enter')
+    if (e.key === 'Enter') {
       setNavbarAction({ searchText: e.target.value });
+      if (history.location !== '/')
+        history.push('/');
+    }
   }
   const handleClear = e => {
     setSearchText('');
