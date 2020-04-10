@@ -31,8 +31,6 @@ export default function CategoryList({ selectedCategory, setCategory }) {
   const [isEmpty, setIsEmpty] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // TODO:- Remeber to test renderEmpty
-
   useEffect(() => {
     const fetchCategories = async () => {
       setIsLoading(true);

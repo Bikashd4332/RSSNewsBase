@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   makeStyles,
   List,
   Typography,
-  ListItemIcon,
-  ListItem,
-  Paper,
-  ListItemText  } from "@material-ui/core";
-import BusinessIcon from "@material-ui/icons/Business";
+  Paper
+} from "@material-ui/core";
+
+import AgencyFetchService from "../../services/AgencyFetchService";
+import { makeAgencyList, renderAgencyEmpty, renderAgencyLoading } from "./AgencyListHelper";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -15,7 +15,7 @@ const useStyle = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     maxHeight: 350,
     overflowY: "scroll"
-   },
+  },
   smallHeader: {
     textAlign: "center",
     fontSize: 14,
@@ -25,40 +25,42 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-const agencyList = ["Times of India", "Hindustan Times", "The Hindu"]
-
-
-export default function AgencyList (props) {
+export default function AgencyList({ selectedAgency, setAgency }) {
   const classes = useStyle();
+  const [agencies, setAgencies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
 
-  const makeAgencyList = (agencyList) => {
-    return (
-      <>
-      {agencyList.map((agency, idx) => (
-        <ListItem button key={idx} divider>
-          <ListItemIcon >
-            <BusinessIcon />
-          </ListItemIcon>
-          <ListItemText
-            primary={agency}
-            primaryTypographyProps={{ "variant": "inherit" }}
-          />
-        </ListItem>
-      ))}
-      </>
-    )
-  };
+  useEffect(() => {
+    const fetchService = async () => {
+      setIsLoading(true);
+      const agencies = await AgencyFetchService.fetch();
+      if (agencies.length) {
+        setIsLoading(false);
+        setIsEmpty(false);
+        setAgencies(agencies);
+      } else {
+        setIsLoading(false);
+        setIsEmpty(true);
+      }
+    };
+    fetchService();
+  }, []);
 
   return (
     <Paper elevation={3} className={classes.root}>
       <Typography
         component="p"
-        className = {classes.smallHeader}
+        className={classes.smallHeader}
       >
         RSS Providers
       </Typography>
       <List>
-        { makeAgencyList(agencyList)}
+        {isLoading
+          ? renderAgencyLoading()
+          : isEmpty
+            ? renderAgencyEmpty()
+            : makeAgencyList(agencies, selectedAgency, setAgency)}
       </List>
     </Paper>
   );

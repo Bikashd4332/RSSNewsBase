@@ -15,13 +15,14 @@ function PostList({ navbarActions, showPostsOf, classes }) {
   const [isLoading, setLoading] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const { searchText } = navbarActions
+  const { category, agency } = showPostsOf;
 
   // for calling service func. for fetching news.
-  const handleNewsFetch = async (searchText, categoryId) => {
+  const handleNewsFetch = async (searchText, categoryId, agencyId) => {
     setLoading(true);
     try {
       // NewsFetchService remembers the previously fetched records.
-      const newsItems = await NewsFetchService.fetchNews(searchText, categoryId);
+      const newsItems = await NewsFetchService.fetchNews(searchText, categoryId, agencyId);
       if (newsItems.length === 0) {
         setLoading(false);
         setIsEmpty(true);
@@ -43,10 +44,10 @@ function PostList({ navbarActions, showPostsOf, classes }) {
     const prepareFetch = () => {
       // Pretend its a new fetch and forget all the previous.
       NewsFetchService.clear();
-      handleNewsFetch(searchText, showPostsOf);
+      handleNewsFetch(searchText, category, agency);
     }
     prepareFetch();
-  }, [ searchText, showPostsOf ]);
+  }, [ searchText, agency, category ]);
 
 
   return (

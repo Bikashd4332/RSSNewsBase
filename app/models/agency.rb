@@ -5,7 +5,7 @@ class Agency < ActiveRecord::Base
   has_many :agency_feed
 
   ##
-  # Adding  file upload handler 
+  # Adding  file upload handler
   mount_uploader :logo_path, AgencyLogoUploader
 
   ##

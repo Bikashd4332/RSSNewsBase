@@ -39,7 +39,7 @@ class NewsFetchService {
   }
 
   /* function for retrieving the list of news */
-  async fetchNews(searchString, categoryId) {
+  async fetchNews(searchString, categoryId, agencyId) {
     let url = null;
     let param = {};
     // Initial request shoud use API, follow up request use nextUrl
@@ -53,6 +53,9 @@ class NewsFetchService {
       }
       if (searchString) {
         param.find = searchString
+      }categoryId
+      if (agencyId !== 0) {
+        param.agency = agencyId;
       }
     }
     // Attach the prepared queryparam.

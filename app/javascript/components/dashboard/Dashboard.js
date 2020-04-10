@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
-import { Container , Grid, makeStyles, Hidden} from '@material-ui/core';
+import React, { useState } from 'react';
+import { Container, Grid, makeStyles, Hidden } from '@material-ui/core';
 
 import PostsList from "../postlist/PostList";
 import CategoryList from "../categorylist/CategoryList";
 import NavbarSearchContext from "../contexts/NavbarSearchContext";
-import AgencyList  from "../agencylist/AgencyList";
+import AgencyList from "../agencylist/AgencyList";
 
 const useStyle = makeStyles((theme) => ({
   cards: {
@@ -12,11 +12,12 @@ const useStyle = makeStyles((theme) => ({
   }
 }))
 
-export default function Dashboard(){
+export default function Dashboard() {
   const classes = useStyle();
   // Represents the selected category id.
   // Initially points to 0 which is for 'all'.
-  const  [category, setCategory] = useState(0);
+  const [category, setCategory] = useState(0);
+  const [agency, setAgency] = useState(0);
   return (
     <>
       <Container maxWidth="md" className={classes.root} >
@@ -27,13 +28,18 @@ export default function Dashboard(){
                 <CategoryList selectedCategory={category} setCategory={setCategory} />
               </Grid>
               <Grid item className={classes.cards}>
-                <AgencyList />
+                <AgencyList selectedAgency={agency} setAgency={setAgency} />
               </Grid>
             </Grid>
           </Hidden>
           <Grid item lg={8}>
             <NavbarSearchContext.Consumer>
-              {(props) => <PostsList showPostsOf={category} {...props} /> }
+              {(props) =>
+                <PostsList
+                  showPostsOf={{ category: category, agency: agency }}
+                  {...props}
+                />
+              }
             </NavbarSearchContext.Consumer>
           </Grid>
         </Grid>

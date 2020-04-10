@@ -68,9 +68,15 @@ const renderLoading = () => {
 const renderEmpty = () => {
   return (
     <>
-      {<Typography variant="p" color="textSecondary">
-        There is no categories.
-      </Typography>}
+      {
+        <Typography variant="inherit"
+          component="p"
+          color="textSecondary"
+          align="center"
+        >
+         No categories available.
+      </Typography>
+      }
     </>
   )
 }

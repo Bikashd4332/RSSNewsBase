@@ -15,6 +15,7 @@ class Api::V1::NewsController < ApplicationController
   NewsReducer = Rack::Reducer.new(
     News.all,
     ->(category:) { joins(:agency_feed).where('agency_feeds.category_id = ?', category)},
+    ->(agency:) { joins(:agency_feed).where('agency_feeds.agency_id = ?', agency)},
     ->(find:) { where("title LIKE ? OR description LIKE ?", "%#{find}%", "%#{find}%")}
   )
 
