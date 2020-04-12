@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import UserLoginStateContext  from "../contexts/UserLoginStatecontext";
 
-export default function UserLoginStateProvider (props) {
-
-  const [loggedInUser, setLoggedInUser] = useState(null);
-
+// Context provider for providing the state of logged in user.
+export default function UserLoginStateProvider ({ loggedInUser, setLoggedInUser, children }) {
   return (
     <UserLoginStateContext.Provider value={{loggedInUser, setLoggedInUser}}>
-      {props.children}
+      {children}
     </UserLoginStateContext.Provider>
   );
 }

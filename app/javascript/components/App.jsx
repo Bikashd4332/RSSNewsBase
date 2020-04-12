@@ -1,6 +1,6 @@
-import React, {  useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { CssBaseline, createMuiTheme, ThemeProvider } from "@material-ui/core";
 import 'typeface-roboto';
 
@@ -10,14 +10,22 @@ import SignUp from "./signup/SignUp"
 import Dashboard from "./dashboard/Dashboard"
 import NavbarSearchContextProvider from "./providers/NavbarSearchTextProvider";
 import UserLoginStateProvider from "./providers/UserLoginStateProvider";
+import AuthService from "../services/AuthService";
 
 const getRememberedThemePreference = () => {
   const theme = localStorage.getItem('themePreference');
-  return (theme === null )? 'light' : theme;
+  return (theme === null) ? 'light' : theme;
+}
+
+const getRememberedLoggedInUser = () => {
+  return (AuthService.isAuthenticated()) ? AuthService.user : null;
 }
 
 export default function App() {
+  // Represents the theme preference either dark or light.
   const [themePreference, setThemePreference] = React.useState(getRememberedThemePreference());
+  // Represents the state of logged in user.
+  const [loggedInUser, setLoggedInuser] = useState(getRememberedLoggedInUser());
   // Represents the state for navbar actions
   const [navbarActions, setNavbarActions] = useState({ searchText: '' });
 
@@ -38,25 +46,37 @@ export default function App() {
   );
 
   return (
-    <BrowserRouter>
+    <Router>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <UserLoginStateProvider >
+        <UserLoginStateProvider
+          loggedInUser={loggedInUser}
+          setLoggedInUser={setLoggedInuser}
+        >
           <Navbar
             setThemePreference={setThemePreference}
             themePreference={themePreference}
             setNavbarAction={setNavbarActions}
           />
+          <NavbarSearchContextProvider
+            setNavbarActions={setNavbarActions}
+            navbarActions={navbarActions}
+          >
+            <Route path={"/news"} exact component={Dashboard} />
+          </NavbarSearchContextProvider>
+
+          <Route path={"/signin"}
+            render={(props) =>
+            (loggedInUser === null) ? <SignIn setLoggedInUser={setLoggedInuser} /> : <Redirect to={"/news"} />
+            }
+          />
+          <Route path={"/signup"}
+            render={(props) =>
+              (loggedInUser === null) ? <SignUp /> : <Redirect to={"/news"} />
+            }
+          />
         </UserLoginStateProvider>
-        <NavbarSearchContextProvider
-          setNavbarActions={setNavbarActions}
-          navbarActions={navbarActions}
-        >
-          <Route path={"/"} exact component={Dashboard} />
-        </NavbarSearchContextProvider>
-        <Route path={"/signin"} component={SignIn} />
-        <Route path={"/signup"} component={SignUp} />
       </ThemeProvider>
-    </BrowserRouter>
+    </Router>
   );
 }
