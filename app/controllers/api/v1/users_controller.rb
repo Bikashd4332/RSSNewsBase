@@ -23,10 +23,10 @@ class Api::V1::UsersController < ApplicationController
     logger.info "New User with id #{@user.id} has been saved."
     #
     # log-in the user immediately after sign-up
-    # issue a refresh token with that the 
+    # issue a refresh token with that the
     # user will request an access token.
     set_refresh_token @user
-    render :show, status :created
+    render :show, status: :created
   end
 
   ##
