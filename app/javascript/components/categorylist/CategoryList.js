@@ -12,7 +12,9 @@ import { renderCategoryListItems, renderEmpty, renderLoading } from "./CategoryH
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing(3),
+    [theme.breakpoints.up('md')]: {
+      marginTop: theme.spacing(3),
+    },
     maxHeight: 350,
     overflowY: "scroll"
   },
@@ -65,7 +67,7 @@ export default function CategoryList({ selectedCategory, setCategory }) {
             ? renderLoading()
             : isEmpty
               ? renderEmpty()
-              : renderCategoryListItems (
+              : renderCategoryListItems(
                 categories,
                 selectedCategory,
                 setCategory
