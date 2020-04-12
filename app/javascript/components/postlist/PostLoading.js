@@ -22,14 +22,14 @@ function PostLoading(props) {
             <RssFeedIcon />
           </Avatar>
         </Grid>
-        <Grid item xs={11}>
-          <Skeleton variant="text" animation={"wave"} />
-          <Skeleton variant="text" animation={"wave"} />
+        <Grid item xs={6}>
+          <Skeleton variant="text" width={'100%'} animation={"wave"} />
+          <Skeleton variant="text" width={'100%'} animation={"wave"} />
         </Grid>
       </Grid>
-      <Skeleton variant="text" animation={"wave"} />
-      <Skeleton variant="text" animation={"wave"} />
-      <Skeleton variant="text" animation={"wave"} />
+      <Skeleton variant="text" width={'100%'} animation={"wave"} />
+      <Skeleton variant="text" width={'100%'} animation={"wave"} />
+      <Skeleton variant="text" width={'100%'} animation={"wave"} />
     </CardContent>
   </Card>
   ))

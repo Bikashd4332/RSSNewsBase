@@ -9,6 +9,13 @@ import AgencyList from "../agencylist/AgencyList";
 const useStyle = makeStyles((theme) => ({
   cards: {
     margin: theme.spacing(2)
+  },
+  // Make the posts full width in small displays.
+  posts: {
+    width: 'auto',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    },
   }
 }))
 
@@ -23,16 +30,16 @@ export default function Dashboard() {
       <Container maxWidth="md" className={classes.root} >
         <Grid container>
           <Hidden xsDown>
-            <Grid item >
+            <Grid item sm={4} md={3} >
               <Grid item className={classes.cards}>
                 <CategoryList selectedCategory={category} setCategory={setCategory} />
               </Grid>
-              <Grid item className={classes.cards}>
+              <Grid item  className={classes.cards}>
                 <AgencyList selectedAgency={agency} setAgency={setAgency} />
               </Grid>
             </Grid>
           </Hidden>
-          <Grid item lg={8}>
+          <Grid item sm={8} className={classes.posts}>
             <NavbarSearchContext.Consumer>
               {(props) =>
                 <PostsList

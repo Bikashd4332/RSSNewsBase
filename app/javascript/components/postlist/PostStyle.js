@@ -2,8 +2,9 @@
 
 export const style = theme => ({
   root: {
-    width: '100%',
-    margin: theme.spacing(2)
+    [theme.breakpoints.up('sm')]: {
+      margin: theme.spacing(2)
+    }
   },
   title: {
     fontSize: 15,
@@ -18,7 +19,10 @@ export const style = theme => ({
     paddingTop: theme.spacing(1)
   },
   newsCards: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    }
   },
   cardAvatar: {
     paddingRight: theme.spacing(1)

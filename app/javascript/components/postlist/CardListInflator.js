@@ -19,13 +19,13 @@ function NewsListInflator(props){
     return newsList.map((news, idx) => (
       <Card elevation={3} className={classes.newsCards} key={idx}>
         <CardContent>
-          <Grid container >
-            <Grid item className={classes.cardAvatar}>
+          <Grid container wrap="nowrap">
+            <Grid item xs={2} md={1} className={classes.cardAvatar}>
               <Avatar variant="circle">
                 <RssFeedIcon />
               </Avatar>
             </Grid>
-            <Grid item xs={11}>
+            <Grid item >
             <Typography className={classes.title}>
               {news.title}
             </Typography>

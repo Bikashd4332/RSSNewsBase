@@ -65,7 +65,7 @@ const renderAgencyLoading = () => {
             <BusinessIcon />
           </ListItemIcon>
           <ListItemText >
-            <Skeleton />
+            <Skeleton component="p" width={'100%'} />
           </ListItemText>
         </ListItem>
       ))}
@@ -82,7 +82,7 @@ const renderAgencyEmpty = () => {
           color="textSecondary"
           align="center"
         >
-         No agencies available.
+          No agencies available.
       </Typography>
       }
     </>
@@ -90,4 +90,4 @@ const renderAgencyEmpty = () => {
 
 }
 
-export { makeAgencyList, renderAgencyLoading, renderAgencyEmpty};
+export { makeAgencyList, renderAgencyLoading, renderAgencyEmpty };

@@ -58,7 +58,8 @@ function PostList({ navbarActions, showPostsOf, classes }) {
       </Typography>
 
       { isLoading
-        ? <PostLoading />
+        ?
+         <PostLoading />
         : isEmpty
           ? <PostEmpty handleNewsFetch={handleNewsFetch} searchText={searchText} />
           : <CardListInflator newsList={news} />

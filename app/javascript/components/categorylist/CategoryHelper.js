@@ -12,22 +12,22 @@ import ListAltIcon from "@material-ui/icons/Label";
 const renderCategoryListItems = (categoryLists, selectedCategory, setCategory) => {
   return (
     <>
-        <ListItem
-          button
-          key={0}
-          divider
-          onClick={e => setCategory(0)}
-        >
-          <ListItemIcon >
-            { 0 === selectedCategory
-              ? <ListAltIcon />
-              : <LabelOutlinedIcon />}
-          </ListItemIcon>
-          <ListItemText
-            primary={"All"}
-            primaryTypographyProps={{ "variant": "inherit" }}
-          />
-        </ListItem>
+      <ListItem
+        button
+        key={0}
+        divider
+        onClick={e => setCategory(0)}
+      >
+        <ListItemIcon >
+          {0 === selectedCategory
+            ? <ListAltIcon />
+            : <LabelOutlinedIcon />}
+        </ListItemIcon>
+        <ListItemText
+          primary={"All"}
+          primaryTypographyProps={{ "variant": "inherit" }}
+        />
+      </ListItem>
       {categoryLists.map((category) => (
         <ListItem
           button
@@ -58,7 +58,7 @@ const renderLoading = () => {
           <ListItemIcon >
             <LabelOutlinedIcon />
           </ListItemIcon>
-          <Skeleton component="p" width={"100%"} />
+          <Skeleton component="p" width={'100%'} />
         </ListItem>
       ))}
     </>
@@ -74,7 +74,7 @@ const renderEmpty = () => {
           color="textSecondary"
           align="center"
         >
-         No categories available.
+          No categories available.
       </Typography>
       }
     </>
