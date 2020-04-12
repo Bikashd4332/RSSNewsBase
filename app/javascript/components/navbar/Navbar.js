@@ -29,7 +29,7 @@ function Navbar(props) {
     if (e.key === 'Enter') {
       setNavbarAction({ searchText: e.target.value });
       if (history.location !== '/')
-        history.push('/');
+        history.push('/news');
     }
   }
   const handleClear = e => {
@@ -66,11 +66,11 @@ function Navbar(props) {
                 onKeyDown={handleDoSearch}
                 inputProps={{ 'aria-label': 'search' }}
               />
-              { searchText && <div className={classes.clear}>
+              {searchText && <div className={classes.clear}>
                 <IconButton size="small" onClick={handleClear}>
                   <ClearIcon />
                 </IconButton>
-              </div> }
+              </div>}
             </div>
             <div className={classes.grow} />
 

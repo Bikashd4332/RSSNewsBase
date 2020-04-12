@@ -1,49 +1,58 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 // UI Element Import
 import {
-   Menu,
-   MenuItem,
-   Badge,
-   IconButton,
-   makeStyles,
-   Button
-  } from "@material-ui/core";
+  Menu,
+  MenuItem,
+  Badge,
+  IconButton,
+  makeStyles,
+  Button
+} from "@material-ui/core";
 
 // Icon Import
 import MoreIcon from "@material-ui/icons/MoreVert";
 import BrightnessIcon from "@material-ui/icons/Brightness4";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import AccountCircleIcon  from "@material-ui/icons/AccountCircle";
-import NotificationsIcon  from "@material-ui/icons/Notifications";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import NotificationsIcon from "@material-ui/icons/Notifications";
+import AuthService from "../../../services/AuthService";
 
 const useStyle = makeStyles((theme) => ({
   sectionDesktop: {
     display: 'none',
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       display: 'flex',
     },
   },
   sectionMobile: {
     display: 'flex',
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       display: 'none',
     },
   },
 }));
 
 
-export default function NavbarClickables( props ) {
+export default function NavbarClickables(props) {
   const classes = useStyle();
+  const history = useHistory();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
-  const isLoggedIn = Boolean(props.loggedInUser)
+  const isLoggedIn = Boolean(props.loggedInUser);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  // handle logout
+  const handleLogOut = () => {
+    AuthService.logout();
+    props.setLoggedInUser(null);
+    history.push('/signin');
+    handleMenuClose();
+  }
   // Set the target element at which profile
   // Menu will be drawn.
   const handleProfileMenuOpen = (event) => {
@@ -67,7 +76,7 @@ export default function NavbarClickables( props ) {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
-};
+  };
 
   // Set the target element where mobile menu
   // will be drawn.
@@ -79,7 +88,7 @@ export default function NavbarClickables( props ) {
   // onClick of brightness icon.
   const handleThemeChange = () => {
     props.setThemePreference(
-      (props.themePreference === 'dark')? 'light' : 'dark'
+      (props.themePreference === 'dark') ? 'light' : 'dark'
     );
   }
 
@@ -96,6 +105,7 @@ export default function NavbarClickables( props ) {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleLogOut}>Log out</MenuItem>
     </Menu>
   );
 
@@ -112,10 +122,10 @@ export default function NavbarClickables( props ) {
     >
       <MenuItem onClick={handleThemeChange} >
         <IconButton
-        aria-label="change theme"
-        color="inherit"
+          aria-label="change theme"
+          color="inherit"
         >
-            <BrightnessIcon />
+          <BrightnessIcon />
         </IconButton>
         <p>Theme</p>
       </MenuItem>
@@ -167,9 +177,9 @@ export default function NavbarClickables( props ) {
           aria-label="change theme"
           color="inherit"
           onClick={handleThemeChange}
-          >
-            <BrightnessIcon />
-          </IconButton>
+        >
+          <BrightnessIcon />
+        </IconButton>
 
         <IconButton aria-label="show notifications" color="inherit">
           <Badge badgeContent={props.notificationCounts} color="secondary">
@@ -177,16 +187,16 @@ export default function NavbarClickables( props ) {
           </Badge>
         </IconButton>
 
-        { !isLoggedIn &&
+        {!isLoggedIn &&
           <Button
             component={Link}
             startIcon={<ExitToAppIcon />}
             to={'/signin'}
-            >
+          >
             Sign In
-          </Button> }
+          </Button>}
 
-        { isLoggedIn &&
+        {isLoggedIn &&
           <IconButton
             color="inherit"
             aria-label="profile"
@@ -210,8 +220,8 @@ export default function NavbarClickables( props ) {
           <MoreIcon />
         </IconButton>
       </div>
-    {renderMobileMenu}
-    {renderMenu}
+      {renderMobileMenu}
+      {renderMenu}
     </>
   );
 }
