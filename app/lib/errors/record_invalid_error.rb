@@ -7,9 +7,9 @@ module Errors
       @status = 422
     end
 
-    def serialize_errors 
+    def serialize_errors
       error_details = @errors.record.errors.messages.reduce([]) do |r, (title, messages)|
-       r << { field: title, invalid_messages: messages }
+       r << { field: title, message: messages }
       end
 
       error_hash = {

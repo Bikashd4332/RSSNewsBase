@@ -6,6 +6,7 @@ import {
   InputBase,
   Avatar,
   Container,
+  Drawer,
   withStyles,
   IconButton
 } from '@material-ui/core';

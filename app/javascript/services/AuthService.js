@@ -1,4 +1,5 @@
-const API = '/api/v1/tokens.json';
+const AUTH_API = '/api/v1/tokens.json';
+const SIGNUP_API = '/api/v1/users.json';
 
 class AuthService {
   constructor() {
@@ -65,7 +66,7 @@ class AuthService {
       'Content-Type': 'application/json'
     }
     const body = { email, password };
-    return fetch(API, { method: 'POST', headers: headers, body: JSON.stringify(body) })
+    return fetch(AUTH_API, { method: 'POST', headers: headers, body: JSON.stringify(body) })
       .then(response => {
         if (!response.ok) throw Error(response.statusText);
         this.refreshToken = response.headers.get('Authorization');
@@ -76,7 +77,7 @@ class AuthService {
   async getAccessToken() {
     if (this.refreshToken !== '') {
       const header = { Authorization: this.refreshToken };
-      return fetch(API, { method: 'PUT', headers: header })
+      return fetch(AUTH_API, { method: 'PUT', headers: header })
         .then(response => {
           if (!response.ok) throw Error(response.statusText);
           this.accessToken = response.headers.get('Authorization')
@@ -88,6 +89,32 @@ class AuthService {
   logout() {
     this.clearSession();
     this.user = this.accessToken = this.refreshToken = this.iAt = null;
+  }
+
+  // Sign the given user up.
+  // param Object<any>, Function
+  async signUp(user, validationCallback) {
+    const headers = { 'Content-Type': 'application/json' }
+    const body = JSON.stringify({ user });
+
+    // Request for user sign up if recieves 422 then call the validationCallback.
+    await fetch(SIGNUP_API, { method: 'POST', headers: headers, body: body })
+      .then(async response => {
+        // if request succeeds then get refresh token.
+        if (response.ok) {
+          this.refreshToken = response.headers.get('Authorization');
+          this.getAccessToken();
+          this.user = await response.json();
+        }
+        const validationResponse = await response.json();
+        validationCallback(validationResponse);
+      });
+    // if everything goes well return this user.
+    if (this.accessToken) {
+      this.setSession();
+      return this.user;
+    }
+    return null;
   }
 }
 

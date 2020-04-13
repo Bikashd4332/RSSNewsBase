@@ -37,8 +37,7 @@ class Api::V1::TokensController < ApplicationController
       @user = User.get_default_user
       logger.warn("Authenticating default user!")
     else
-      @user = User.find_by current_user.id
-      raise JWT::Auth::UnauthorizedError unless @user
+      @user = User.find_by_email params[:email]
     end
 
   end

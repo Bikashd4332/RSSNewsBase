@@ -72,7 +72,7 @@ export default function App() {
           />
           <Route path={"/signup"}
             render={(props) =>
-              (loggedInUser === null) ? <SignUp /> : <Redirect to={"/news"} />
+              (loggedInUser === null) ? <SignUp setLoggedInUser={setLoggedInuser}/> : <Redirect to={"/news"} />
             }
           />
         </UserLoginStateProvider>

@@ -53,7 +53,7 @@ function PostList({ navbarActions, showPostsOf, classes }) {
   return (
     <div className={classes.root}>
       {/* Search text will show up here. */}
-      <Typography component="h4" hidden={searchText === ''}>
+      <Typography component="h4" hidden={searchText === ''} className={classes.searchResult}>
         Search Results for: { searchText }
       </Typography>
 

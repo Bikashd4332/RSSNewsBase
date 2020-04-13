@@ -2,7 +2,7 @@
 
 export const style = theme => ({
   root: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       margin: theme.spacing(2)
     }
   },
@@ -19,7 +19,7 @@ export const style = theme => ({
     paddingTop: theme.spacing(1)
   },
   newsCards: {
-    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
     [theme.breakpoints.down('sm')]: {
       width: '100%'
     }
@@ -28,7 +28,10 @@ export const style = theme => ({
     paddingRight: theme.spacing(1)
   },
   emptyStateImg: {
-    width: 320,
-    height: 320
+    width: '100%',
+    margin: 'auto auto',
+  },
+  searchResult: {
+    padding: theme.spacing(1)
   }
 });

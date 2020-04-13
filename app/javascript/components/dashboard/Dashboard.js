@@ -5,6 +5,7 @@ import PostsList from "../postlist/PostList";
 import CategoryList from "../categorylist/CategoryList";
 import NavbarSearchContext from "../contexts/NavbarSearchContext";
 import AgencyList from "../agencylist/AgencyList";
+import NewsFilterDrawer from './NewsFiltersDrawer';
 
 const useStyle = makeStyles((theme) => ({
   cards: {
@@ -16,6 +17,9 @@ const useStyle = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       width: '100%'
     },
+    [theme.breakpoints.up('sm')]: {
+      marginTop: theme.spacing(2)
+    }
   }
 }))
 
@@ -29,12 +33,20 @@ export default function Dashboard() {
     <>
       <Container maxWidth="md" className={classes.root} >
         <Grid container>
+          <Hidden smUp>
+            <NewsFilterDrawer
+              setCategory={setCategory}
+              setAgency={setAgency}
+              selectedAgency={agency}
+              selectedCategory={category}
+            />
+          </Hidden>
           <Hidden xsDown>
-            <Grid item sm={4} md={3} >
+            <Grid item sm={4} md={3}>
               <Grid item className={classes.cards}>
                 <CategoryList selectedCategory={category} setCategory={setCategory} />
               </Grid>
-              <Grid item  className={classes.cards}>
+              <Grid item className={classes.cards}>
                 <AgencyList selectedAgency={agency} setAgency={setAgency} />
               </Grid>
             </Grid>
