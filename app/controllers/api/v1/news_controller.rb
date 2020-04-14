@@ -26,7 +26,7 @@ class Api::V1::NewsController < ApplicationController
   def index
     ##
     # This news reducer will filter news on given params.
-    @news = paginate NewsReducer.apply(params)
+    @news = paginate NewsReducer.apply(params), per_page: 10
     render :index, status: :ok
   end
 

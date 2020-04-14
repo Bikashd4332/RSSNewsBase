@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { withStyles, Typography } from "@material-ui/core";
+import { withStyles, Typography, CircularProgress } from "@material-ui/core";
 
 import NewsFetchService from "../../services/NewsFetchService";
 import { style } from "./PostStyle";
 import PostLoading from "./PostLoading";
-import PostEmpty  from "./PostEmpty";
-import CardListInflator  from "./CardListInflator";
+import PostEmpty from "./PostEmpty";
+import CardListInflator from "./CardListInflator";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 function PostList({ navbarActions, showPostsOf, classes }) {
 
@@ -18,18 +19,28 @@ function PostList({ navbarActions, showPostsOf, classes }) {
   const { category, agency } = showPostsOf;
 
   // for calling service func. for fetching news.
-  const handleNewsFetch = async (searchText, categoryId, agencyId) => {
-    setLoading(true);
+  const handleNewsFetch = async (searchText, categoryId, agencyId, isFethingMore = true) => {
+    if (!isFethingMore)
+      setLoading(true);
     try {
-      // NewsFetchService remembers the previously fetched records.
-      const newsItems = await NewsFetchService.fetchNews(searchText, categoryId, agencyId);
-      if (newsItems.length === 0) {
+      // NewsFetchService gets the next set of available records.
+      const newsItems = await NewsFetchService.fetchNews(searchText, categoryId, agencyId, isFethingMore);
+      if (newsItems === null) return;
+      if (newsItems.length !== 0 && !isFethingMore) {
+        // not fetch more and we got fresh data here.
         setLoading(false);
-        setIsEmpty(true);
-      }
-      else {
+        setIsEmpty(false);
+        setNews(newsItems);
+      } else if (newsItems.length === 0 && !isFethingMore) {
+        // not fetch more and did get any data then.
         setNews(newsItems);
         setLoading(false);
+        setIsEmpty(true);
+      } else {
+        // if its fetch more just attach more data.
+        setNews(prevState => {
+          return [...prevState, ...newsItems];
+        })
         setIsEmpty(false);
       }
     }
@@ -44,26 +55,33 @@ function PostList({ navbarActions, showPostsOf, classes }) {
     const prepareFetch = () => {
       // Pretend its a new fetch and forget all the previous.
       NewsFetchService.clear();
-      handleNewsFetch(searchText, category, agency);
+      handleNewsFetch(searchText, category, agency, false);
     }
     prepareFetch();
-  }, [ searchText, agency, category ]);
-
+  }, [searchText, agency, category]);
 
   return (
-    <div className={classes.root}>
+    <div id="postList" className={classes.root}>
       {/* Search text will show up here. */}
       <Typography component="h4" hidden={searchText === ''} className={classes.searchResult}>
-        Search Results for: { searchText }
+        Search Results for: {searchText}
       </Typography>
 
-      { isLoading
+      {isLoading
         ?
-         <PostLoading />
+        <PostLoading />
         : isEmpty
-          ? <PostEmpty handleNewsFetch={handleNewsFetch} searchText={searchText} />
-          : <CardListInflator newsList={news} />
-      }
+          ? <PostEmpty searchText={searchText} />
+          : (
+            <InfiniteScroll
+              dataLength={news.length}
+              next={handleNewsFetch}
+              hasMore={NewsFetchService.hasMore}
+              loader={<div className={classes.progress} > <CircularProgress /></div>}
+            >
+              <CardListInflator newsList={news} />
+            </InfiniteScroll>
+          )}
     </div>
   );
 }

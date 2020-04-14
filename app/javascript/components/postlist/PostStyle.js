@@ -19,9 +19,12 @@ export const style = theme => ({
     paddingTop: theme.spacing(1)
   },
   newsCards: {
+    margin: theme.spacing(0, 1, 0, 1),
     marginBottom: theme.spacing(3),
     [theme.breakpoints.down('sm')]: {
-      width: '100%'
+      width: '100%',
+      marginLeft: 0,
+      marginRight: 0
     }
   },
   cardAvatar: {
@@ -32,6 +35,13 @@ export const style = theme => ({
     margin: 'auto auto',
   },
   searchResult: {
+    padding: theme.spacing(1)
+  },
+  progress: {
+    width: '100%',
+    margin: 'auto',
+    display: 'flex',
+    justifyContent: 'center',
     padding: theme.spacing(1)
   }
 });
