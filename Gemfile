@@ -35,6 +35,7 @@ gem 'rack-reducer', require: 'rack/reducer'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem "capistrano", "~> 3.13"
   gem 'byebug'
 end
 
@@ -50,3 +51,6 @@ end
 gem "api-pagination", "~> 4.8"
 
 gem "will_paginate", "~> 3.3"
+
+gem "whenever", "~> 1.0"
+
