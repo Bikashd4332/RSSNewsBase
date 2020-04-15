@@ -7,6 +7,7 @@ import 'typeface-roboto';
 import Navbar from "./navbar/Navbar";
 import SignIn from "./signin/SignIn"
 import SignUp from "./signup/SignUp"
+import Customization from "./customization/Customization";
 import Dashboard from "./dashboard/Dashboard"
 import NavbarSearchContextProvider from "./providers/NavbarSearchTextProvider";
 import UserLoginStateProvider from "./providers/UserLoginStateProvider";
@@ -65,6 +66,11 @@ export default function App() {
             <Route path={"/news"} exact component={Dashboard} />
           </NavbarSearchContextProvider>
 
+          <Route path={"/customization"}
+            render={(props) =>
+              (loggedInUser !== null) ? <Customization setLoggedInUser={setLoggedInuser}/> : <Redirect to={"/signin"} />
+            }
+          />
           <Route path={"/signin"}
             render={(props) =>
             (loggedInUser === null) ? <SignIn setLoggedInUser={setLoggedInuser} /> : <Redirect to={"/news"} />

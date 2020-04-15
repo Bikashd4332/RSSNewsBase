@@ -32,13 +32,22 @@ class Api::V1::TokensController < ApplicationController
 
   private
   def set_user
-
     if (params[:email] || current_user.try(:email)) == User::DEFAULT_USER_EMAIL
       @user = User.get_default_user
       logger.warn("Authenticating default user!")
     else
-      @user = User.find_by_email params[:email]
+      ##
+      # When the client tries to get authenticated initially for refresh token.
+      if params[:email] && params[:password]
+          @user = User.find_by_email params[:email]
+          ##
+          # If unmatched password then raise error.
+          raise JWT::Auth::UnauthorizedError, 'invalid credential' unless @user.authenticate(params[:password])
+      else
+        ##
+        # When the client to refresh access token with already obtained refresh token
+          @user = current_user
+      end
     end
-
   end
 end

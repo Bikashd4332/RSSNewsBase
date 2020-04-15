@@ -41,8 +41,7 @@ function Navbar(props) {
     // The whole navbar div element
     <div className={classes.grow}>
       {/* AppBar element provides the layout of navbar. */}
-      <AppBar position="static"
-        color="inherit">
+      <AppBar position="static" color="inherit">
         {/* Keep items inside navbar aligned */}
         <Container maxWidth="md">
           {/* The use of toolbar is to give layout to menus. */}

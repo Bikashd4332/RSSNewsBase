@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
+import Gravatar from "react-awesome-gravatar";
 
 // UI Element Import
 import {
@@ -8,7 +9,8 @@ import {
   Badge,
   IconButton,
   makeStyles,
-  Button
+  Button,
+  Avatar
 } from "@material-ui/core";
 
 // Icon Import
@@ -103,8 +105,11 @@ export default function NavbarClickables(props) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem
+        component={Link}
+        to={"/customization"}
+        onClick={handleMenuClose}
+      >Customization</MenuItem>
       <MenuItem onClick={handleLogOut}>Log out</MenuItem>
     </Menu>
   );
@@ -199,10 +204,13 @@ export default function NavbarClickables(props) {
         {isLoggedIn &&
           <IconButton
             color="inherit"
+            size="small"
             aria-label="profile"
             onClick={handleProfileMenuOpen}
           >
-            <AccountCircleIcon />
+            <Gravatar email={props.loggedInUser.email}>
+              {url => <Avatar src={url} />}
+            </Gravatar>
           </IconButton>
         }
       </div>

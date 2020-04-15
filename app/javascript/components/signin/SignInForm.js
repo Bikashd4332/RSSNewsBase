@@ -12,7 +12,6 @@ import { useHistory, useLocation } from "react-router-dom";
 
 import AuthService from "../../services/AuthService";
 import SigninAction from "./SiginAction";
-// import AuthService from "../../services/AuthService";
 
 const useStyle = makeStyles((theme) => ({
   form: {

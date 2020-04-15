@@ -2,6 +2,10 @@ class User < ActiveRecord::Base
   include JWT::Auth::Authenticatable
 
   ##
+  # Specifying secure password storage by hashing it
+  has_secure_password
+
+  ##
   # ActiveRecord validations
   validates_presence_of :name, :email, :password
 
@@ -15,6 +19,8 @@ class User < ActiveRecord::Base
 
   validates_confirmation_of :password
 
+  validates_with Validators::EmailUniqueValidator
+
   DEFAULT_USER_EMAIL = 'user@default.com'
 
   ##
@@ -23,7 +29,7 @@ class User < ActiveRecord::Base
   #
   # param :params => { :id, :token_version, ..}
   def self.find_by_token(params)
-    # if id matched to -1 then consider it 
+    # if id matched to -1 then consider it
     # to be the default user.
     return self.get_default_user if params[:id] == -1
     find_by params[:id]
@@ -42,4 +48,14 @@ class User < ActiveRecord::Base
     )
   end
 
+  private
+  def email_uniqueness
+    begin
+      User.find_by_email email
+      ## Record found then user already exists.
+      errors.add(:email, "Email is already taken!")
+    rescue => exception
+      ## Every this good here.
+    end
+  end
 end

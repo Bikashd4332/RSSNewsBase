@@ -1,35 +1,42 @@
 import React, { useState, useEffect } from "react";
 import {
   Grid,
-  Link as MuiLink,
-  Button,
   makeStyles,
   Snackbar,
+  CircularProgress
 } from "@material-ui/core";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { Alert } from "@material-ui/lab";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+
 // Service for Sign up.
 import AuthService from "../../services/AuthService";
+import SignUpAction from "./SignUpAction";
 
 const useStyle = makeStyles(theme => ({
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
   },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
+  progress: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: theme.spacing(2)
+  }
 }));
 
 const SignUpForm = ({ setLoggedInUser }) => {
   const classes = useStyle();
+  const history = useHistory();
 
   // Text Field value states.
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmationPassword, setConfirmationPassword] = useState('');
+
+  // Loading state for form
+  const [isLoading, setIsLoading] = useState(false);
 
   // Validation state
   const [validEmail, setValidEmail] = useState({ error: false, message: '' });
@@ -46,19 +53,24 @@ const SignUpForm = ({ setLoggedInUser }) => {
 
   // Handle on submit of form.
   const handleSubmit = async () => {
-    const user = await AuthService.signUp({ name, email, password }, errors => {
+    setIsLoading(true);
+    const user = await AuthService.signUp({ name, email, password, 'password_confirmation': confirmationPassword }, errors => {
       // On error it returns some server validation error.
       // .... logic to take those messages and show them in text fields.
-      errors.details.forEach(({ field, message }) => {
-        if (field === 'email') {
-          setValidEmail({ error: true, message: message });
-        } else {
-          setValidPassword({ error: true, message: message });
-        }
-      });
+      if (errors && errors.details) {
+        errors.details.forEach(({ field, message }) => {
+          if (field === 'email') {
+            setValidEmail({ error: true, message: message });
+          } else {
+            setValidPassword({ error: true, message: message });
+          }
+        });
+      }
+      setIsLoading(false);
       setServerState(true);
     });
     if (user) {
+      setIsLoading(false);
       setLoggedInUser(user);
       history.push('/news');
     }
@@ -148,26 +160,9 @@ const SignUpForm = ({ setLoggedInUser }) => {
             />
           </Grid>
         </Grid>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-        >
-          Sign Up
-          </Button>
-        <Grid container justify="flex-end">
-          <Grid item>
-            <MuiLink
-              variant="body2"
-              to='/signin'
-              component={Link}
-            >
-              {"Have an account already! Sign In."}
-            </MuiLink>
-          </Grid>
-        </Grid>
+        {isLoading
+          ? <div className={classes.progress}> <CircularProgress /> </div>
+          : <SignUpAction />}
       </ValidatorForm>
       <Snackbar open={serverState} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">

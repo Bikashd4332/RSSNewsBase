@@ -105,10 +105,12 @@ class AuthService {
           this.refreshToken = response.headers.get('Authorization');
           this.getAccessToken();
           this.user = await response.json();
+        } else {
+          const validationResponse = await response.json();
+          validationCallback(validationResponse);
         }
-        const validationResponse = await response.json();
-        validationCallback(validationResponse);
       });
+    debugger;
     // if everything goes well return this user.
     if (this.accessToken) {
       this.setSession();
