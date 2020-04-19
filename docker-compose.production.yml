@@ -1,0 +1,28 @@
+version: "3"
+services:
+
+# MySQL docker setup
+  mysql:
+    restart: always
+    image: mysql:5.7
+    environment:
+       MYSQL_ROOT_PASSWORD: mysql
+       MYSQL_DATABASE: app_production
+       MYSQL_USER: mysql
+       MYSQL_PASSWORD: mysql
+    ports:
+      - 3307:3306
+
+# Rails docker setup
+  webapp:
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    build:
+      context: .
+      dockerfile: docker/production/Dockerfile
+    env_file: docker/production/.env
+    ports:
+      - 3000:80
+
