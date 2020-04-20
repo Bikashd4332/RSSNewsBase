@@ -9,13 +9,19 @@ import {
   withStyles
 } from "@material-ui/core";
 import RssFeedIcon from "@material-ui/icons/RssFeed";
+import TimeAgo from "javascript-time-ago";
+import LocaleEn from "javascript-time-ago/locale/en";
 
 // Import the styles and use in this component.
 import { style } from "./PostStyle";
 
+TimeAgo.addLocale(LocaleEn);
+
 function NewsListInflator(props) {
   const { classes } = props;
   const { newsList } = props;
+  const timeAgo = new TimeAgo('en-US');
+
   return newsList.map((news, idx) => (
     <Card elevation={3} className={classes.newsCards} key={idx}>
       <CardContent>
@@ -35,10 +41,18 @@ function NewsListInflator(props) {
           </Grid>
         </Grid>
         <Typography paragraph className={classes.description}> {news.description} </Typography>
+        <Typography 
+          align="right"
+          className={classes.timeInfo}
+          variant="body1"
+          component="i"
+        >
+          {timeAgo.format(Date.parse(news.created_at))} 
+        </Typography>
       </CardContent>
     </Card>
   ))
-};
+}
 
 /* withStyles will wrapping our component
 * with the provided before exporting */

@@ -21,11 +21,8 @@
 
 ## silent version
 job_type :rake, "cd :path && :environment_variable=:environment bundle exec rake :task --silent :output"
-
-## non silent version
-job_type :rake!, "cd :path && :environment_variable=:environment bundle exec rake :task :output"
-set :output, "/log/cron.log"
+set :output, "log/cron.log"
 
 every 1.hour do
-  rake! "news:fetch"
+  rake "news:fetch"
 end

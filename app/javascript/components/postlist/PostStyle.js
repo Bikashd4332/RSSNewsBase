@@ -43,5 +43,10 @@ export const style = theme => ({
     display: 'flex',
     justifyContent: 'center',
     padding: theme.spacing(1)
+  },
+  timeInfo: {
+    display: 'block',
+    textAlign: 'right',
+    fontSize: 12
   }
 });

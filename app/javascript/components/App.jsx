@@ -26,7 +26,7 @@ export default function App() {
   // Represents the theme preference either dark or light.
   const [themePreference, setThemePreference] = React.useState(getRememberedThemePreference());
   // Represents the state of logged in user.
-  const [loggedInUser, setLoggedInuser] = useState(getRememberedLoggedInUser());
+  const [loggedInUser, setLoggedInUser] = useState(getRememberedLoggedInUser());
   // Represents the state for navbar actions
   const [navbarActions, setNavbarActions] = useState({ searchText: '' });
 
@@ -52,7 +52,7 @@ export default function App() {
         <CssBaseline />
         <UserLoginStateProvider
           loggedInUser={loggedInUser}
-          setLoggedInUser={setLoggedInuser}
+          setLoggedInUser={setLoggedInUser}
         >
           <Navbar
             setThemePreference={setThemePreference}
@@ -68,17 +68,22 @@ export default function App() {
 
           <Route path={"/customization"}
             render={(props) =>
-              (loggedInUser !== null) ? <Customization setLoggedInUser={setLoggedInuser}/> : <Redirect to={"/signin"} />
+              (loggedInUser !== null) 
+              ? <Customization 
+                 setLoggedInUser={setLoggedInUser}
+                 loggedInUser={loggedInUser}
+                /> 
+              : <Redirect to={"/signin"} />
             }
           />
           <Route path={"/signin"}
             render={(props) =>
-            (loggedInUser === null) ? <SignIn setLoggedInUser={setLoggedInuser} /> : <Redirect to={"/news"} />
+            (loggedInUser === null) ? <SignIn setLoggedInUser={setLoggedInUser} /> : <Redirect to={"/news"} />
             }
           />
           <Route path={"/signup"}
             render={(props) =>
-              (loggedInUser === null) ? <SignUp setLoggedInUser={setLoggedInuser}/> : <Redirect to={"/news"} />
+              (loggedInUser === null) ? <SignUp setLoggedInUser={setLoggedInUser}/> : <Redirect to={"/news"} />
             }
           />
         </UserLoginStateProvider>
