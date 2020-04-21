@@ -1,4 +1,5 @@
 const API = '/api/v1/news.json';
+const NEWS_API_COUNT_UPDATE = '/api/v1/news/up_click_count';
 
 
 class ParsePaginationRespnseHeaders {
@@ -95,6 +96,24 @@ class NewsFetchService {
     this.parsePagniation = null;
     this.hasMore = false
   }
-}
+ 
+  // Increases the clickCount of news by 1 on click of news
+  async increaseClickCountOf(newsId) {
+    const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
+    const body = { id: newsId };
+    const clickCount = await fetch(
+      NEWS_API_COUNT_UPDATE,
+      { method: 'POST', headers: headers, body: JSON.stringify(body) }
+    ).then(response => {
+      if (!response.ok) {
+        throw new Error('failed to update count');
+      } else {
+        response.json();
+      }
+    })
+    return clickCount;
+  }
+ }
+
 
 export default new NewsFetchService();

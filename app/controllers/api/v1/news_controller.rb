@@ -7,16 +7,14 @@ class Api::V1::NewsController < ApplicationController
   # Verify access token before action
   #before_action :validate_access_token
 
-  # before action :show set news
-  before_action :set_news, only: :show
-
   ##
   # News reducer for filtering based on query param.
   NewsReducer = Rack::Reducer.new(
     News.all,
     ->(category:) { joins(:agency_feed).where('agency_feeds.category_id = ?', category)},
     ->(agency:) { joins(:agency_feed).where('agency_feeds.agency_id = ?', agency)},
-    ->(find:) { where("title LIKE ? OR description LIKE ?", "%#{find}%", "%#{find}%")}
+    ->(find:) { where("title LIKE ? OR description LIKE ?", "%#{find}%", "%#{find}%")},
+    ->(id:) { find_by_id id }
   )
 
   ##
@@ -34,8 +32,17 @@ class Api::V1::NewsController < ApplicationController
   # POST /news/:id
   #
   def show
-    ## just render the content
+    @news = NewsReducer.apply(params)
     render :show, status: :ok
+  end
+
+  ##
+  # POST /news/up_click_count
+  def up_click_count
+    ## Get the news
+    @news = NewsReducer.apply(params)
+    @news.increment! :click_count
+    render json: { count: @news.click_count }, status: :ok
   end
 
   ##
@@ -49,10 +56,4 @@ class Api::V1::NewsController < ApplicationController
     render  :fetch, status: :ok
   end
 
-  private
-  ##
-  # Set @news before actions
-  def set_news
-    @news = News.find_by_id! params[:id]
-  end
 end

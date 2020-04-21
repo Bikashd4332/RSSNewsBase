@@ -13,7 +13,7 @@ import RssFeedIcon from "@material-ui/icons/RssFeed";
 function PostLoading(props) {
   const { classes } = props;
 
-  return [1, 2, 3, 4].map((num, array) => (
+  return [1, 2, 3, 4].map((num) => (
   <Card elevation={3} className={classes.newsCards} key={num}>
     <CardContent>
       <Grid container >
@@ -33,6 +33,6 @@ function PostLoading(props) {
     </CardContent>
   </Card>
   ))
-};
+}
 
 export default withStyles(style)(PostLoading);
