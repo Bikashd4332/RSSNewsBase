@@ -2,10 +2,10 @@ class Api::V1::AgenciesController < ApplicationController
 
   ##
   # JWT ValidationsJWT Validations
-  #before_action :require_token
+  before_action :require_token
 
   # require access token before action
-  #before_action :validate_access_token
+  before_action :validate_access_token
 
   # set agency_feed before action
   before_action :set_agency, only: [:update, :destroy, :show ]

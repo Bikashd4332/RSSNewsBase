@@ -48,11 +48,11 @@ class NewsFetchService {
 
     let url = null;
     let param = {};
+    const headers = { 'Authorization': localStorage.getItem('accessToken')};
     // Initial request shoud use API, follow up request use nextUrl
     if (this.hasMore && requestingMore) {
       url = this.parsePagniation.nextUrl;
     } else if (!this.hasMore && requestingMore) {
-      debugger;
       // since there is no more records.
       return [];
     } else {
@@ -73,7 +73,7 @@ class NewsFetchService {
     url += '?' + new URLSearchParams(param).toString();
     // make reqeust and fetch data.
     try {
-      const newsItems = await fetch(url, { signal: this.abortController.signal })
+      const newsItems = await fetch(url, { signal: this.abortController.signal, headers})
         .then(response => {
           if (response.headers.has('Link')) {
             this.parsePagniation = new ParsePaginationRespnseHeaders(response.headers.get('Link'));
@@ -99,11 +99,15 @@ class NewsFetchService {
  
   // Increases the clickCount of news by 1 on click of news
   async increaseClickCountOf(newsId) {
-    const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem("accessToken"),
+    };
     const body = { id: newsId };
     const clickCount = await fetch(
       NEWS_API_COUNT_UPDATE,
-      { method: 'POST', headers: headers, body: JSON.stringify(body) }
+      { method: 'POST', headers, body: JSON.stringify(body) }
     ).then(response => {
       if (!response.ok) {
         throw new Error('failed to update count');

@@ -2,10 +2,10 @@ class Api::V1::NewsController < ApplicationController
 
   #
   # validate token on action
-  #before_action :require_token
+  before_action :require_token
 
   # Verify access token before action
-  #before_action :validate_access_token
+  before_action :validate_access_token
 
   ##
   # News reducer for filtering based on query param.

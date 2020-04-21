@@ -4,7 +4,8 @@ class CategoryFetchService {
   constructor() { }
 
   async fetch() {
-    const categories = await fetch(API).then(response => response.json());
+    const headers = { 'Authorization': localStorage.getItem("accessToken")}
+    const categories = await fetch(API, { headers }).then(response => response.json());
     return categories;
   }
 }
