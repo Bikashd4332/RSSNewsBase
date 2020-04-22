@@ -103,14 +103,14 @@ class AuthService {
         // if request succeeds then get refresh token.
         if (response.ok) {
           this.refreshToken = response.headers.get('Authorization');
-          this.getAccessToken();
+          // we need access token too to complete user auth.
+          await this.getAccessToken();
           this.user = await response.json();
         } else {
           const validationResponse = await response.json();
           validationCallback(validationResponse);
         }
       });
-    debugger;
     // if everything goes well return this user.
     if (this.accessToken) {
       this.setSession();
