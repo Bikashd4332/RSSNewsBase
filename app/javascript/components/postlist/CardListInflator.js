@@ -63,12 +63,18 @@ function NewsListInflator(props) {
           {news.description}{" "}
         </Typography>
         <Typography
-          align="right"
           className={classes.timeInfo}
           variant="body1"
           component="i"
         >
           {timeAgo.format(Date.parse(news.created_at))}
+        </Typography>
+        <Typography
+          variant="body1"
+          component="i"
+          className={classes.viewsInfo}
+        >
+          viewed {news.click} times.
         </Typography>
       </CardContent>
     </Card>

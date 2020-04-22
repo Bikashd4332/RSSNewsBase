@@ -4,10 +4,30 @@ import {
   ListItemIcon,
   ListItem,
   ListItemText,
+  makeStyles,
   Typography
 } from "@material-ui/core";
 import BusinessIcon from "@material-ui/icons/Business";
 import BusinessTwoToneIcon from "@material-ui/icons/BusinessTwoTone";
+import EmptyIconSmall from '../../../../public/empty-box-small.svg'
+
+// Style for empty agencies view
+const emptyStyle = makeStyles(theme => ({
+  iconRoot: {
+    margin: theme.spacing(3),
+  },
+  emptyIcon: {
+    width: 60,
+    height: 60,
+    display: 'block',
+    margin: 'auto',
+  },
+  emptyNotice: {
+    fontSize: 10,
+    display: 'inline-block',
+  }
+
+}));
 
 const makeAgencyList = (agencyList, selectedAgency, setAgency) => {
   return (
@@ -55,7 +75,7 @@ const makeAgencyList = (agencyList, selectedAgency, setAgency) => {
 const renderAgencyLoading = () => {
   return (
     <>
-      {[1, 2, 3, 4].map((num, idx) => (
+      {[1, 2, 3, 4].map((num) => (
         <ListItem
           button
           key={num}
@@ -74,17 +94,27 @@ const renderAgencyLoading = () => {
 };
 
 const renderAgencyEmpty = () => {
+  const classes = emptyStyle();
   return (
     <>
-      {
-        <Typography variant="inherit"
-          component="p"
-          color="textSecondary"
-          align="center"
-        >
-          No agencies available.
+      <div className={classes.iconRoot}>
+        <img src={EmptyIconSmall} className={classes.emptyIcon} />
+      </div>
+      <Typography variant="inherit"
+        component="p"
+        color="textSecondary"
+        align="center"
+      >
+        No categories available.
       </Typography>
-      }
+      <Typography
+        component="i"
+        color="textSecondary"
+        align="center"
+        className={classes.emptyNotice}
+      >
+        You should customize your account to add agencies.
+      </Typography>
     </>
   )
 

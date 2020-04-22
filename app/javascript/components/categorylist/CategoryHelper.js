@@ -3,11 +3,31 @@ import {
   ListItemText,
   ListItem,
   ListItemIcon,
-  Typography
+  Typography,
+  makeStyles,
 } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import LabelOutlinedIcon from "@material-ui/icons/LabelOutlined";
 import ListAltIcon from "@material-ui/icons/Label";
+import EmptyIconSmall from "../../../../public/empty-box-small.svg"
+
+// Style for empty categories view
+const emptyStyle = makeStyles(theme => ({
+  iconRoot: {
+    margin: theme.spacing(3),
+  },
+  emptyIcon: {
+    width: 60,
+    height: 60,
+    display: 'block',
+    margin: 'auto',
+  },
+  emptyNotice: {
+    fontSize: 10,
+    display: 'inline-block',
+  }
+
+}));
 
 const renderCategoryListItems = (categoryLists, selectedCategory, setCategory) => {
   return (
@@ -16,7 +36,7 @@ const renderCategoryListItems = (categoryLists, selectedCategory, setCategory) =
         button
         key={0}
         divider
-        onClick={e => setCategory(0)}
+        onClick={() => setCategory(0)}
       >
         <ListItemIcon >
           {0 === selectedCategory
@@ -33,7 +53,7 @@ const renderCategoryListItems = (categoryLists, selectedCategory, setCategory) =
           button
           key={category.id}
           divider
-          onClick={e => setCategory(category.id)}
+          onClick={() => setCategory(category.id)}
         >
           <ListItemIcon >
             {category.id === selectedCategory
@@ -53,8 +73,8 @@ const renderCategoryListItems = (categoryLists, selectedCategory, setCategory) =
 const renderLoading = () => {
   return (
     <>
-      {[1, 2, 3, 4].map((category, idx) => (
-        <ListItem button key={category.id} divider key={idx}>
+      {[1, 2, 3, 4].map(category => (
+        <ListItem button key={category.id} divider>
           <ListItemIcon >
             <LabelOutlinedIcon />
           </ListItemIcon>
@@ -66,17 +86,27 @@ const renderLoading = () => {
 }
 
 const renderEmpty = () => {
+  const classes = emptyStyle();
   return (
     <>
-      {
-        <Typography variant="inherit"
-          component="p"
-          color="textSecondary"
-          align="center"
-        >
-          No categories available.
+      <div className={classes.iconRoot}>
+        <img src={EmptyIconSmall} className={classes.emptyIcon} />
+      </div>
+      <Typography variant="inherit"
+        component="p"
+        color="textSecondary"
+        align="center"
+      >
+        No categories available.
       </Typography>
-      }
+      <Typography
+        component="i"
+        color="textSecondary"
+        align="center"
+        className={classes.emptyNotice}
+      >
+        You should customize your account to add agencies.
+      </Typography>
     </>
   )
 }

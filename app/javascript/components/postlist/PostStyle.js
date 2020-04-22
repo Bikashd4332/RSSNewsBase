@@ -50,4 +50,9 @@ export const style = (theme) => ({
     textAlign: "right",
     fontSize: 12,
   },
+  viewsInfo: {
+    display: "block",
+    textAlign: "right",
+    fontSize: 12,
+  }
 });
