@@ -129,7 +129,7 @@ const SignUpForm = ({ setLoggedInUser }) => {
           <Grid item xs={12}>
             <TextValidator
               error={validPassword.error}
-              helperText={validPassword.message}
+              helperText={validPassword.message || "Should be between 8 and 20"}
               variant="outlined"
               fullWidth
               value={password}

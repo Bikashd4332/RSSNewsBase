@@ -29,7 +29,7 @@ export default function SignUp({ setLoggedInUser }) {
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
-        <Grid container justify='center' alignContent='space-between' alignItems='baseline'>
+        <Grid container justify='center' alignItems='center'>
           <Grid item >
             <Avatar
               className={classes.avatar}
@@ -38,7 +38,7 @@ export default function SignUp({ setLoggedInUser }) {
           </Grid>
           <Grid item >
             <Typography component="h1" variant="h4">
-              RSSNewsBase
+              NewsForYou
             </Typography>
           </Grid>
         </Grid>

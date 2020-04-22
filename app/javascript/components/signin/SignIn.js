@@ -42,7 +42,7 @@ const SignIn = ({ setLoggedInUser }) => {
           {/* App name item. */}
           <Grid item >
             <Typography component="h1" variant="h4">
-              RSSNewsBase
+              NewsForYou
             </Typography>
           </Grid>
         </Grid>
