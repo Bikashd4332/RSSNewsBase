@@ -32,6 +32,6 @@ class AgencyFeed < ActiveRecord::Base
   
   ##
   # Delegation of property
-  delegate :id, :title, to: :category, prefix: true
+  delegate :id, :name, to: :category, prefix: true
   delegate :id, :name,  to: :agency,   prefix: true
 end

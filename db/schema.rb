@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200330164637) do
+ActiveRecord::Schema.define(version: 20200426104002) do
 
   create_table "agencies", force: :cascade do |t|
     t.string   "name",       limit: 255, null: false
@@ -32,8 +32,9 @@ ActiveRecord::Schema.define(version: 20200330164637) do
   add_index "agency_feeds", ["category_id"], name: "index_agency_feeds_on_category_id", using: :btree
 
   create_table "categories", force: :cascade do |t|
-    t.string   "title",       limit: 255,   null: false
+    t.string   "name",        limit: 255,   null: false
     t.text     "description", limit: 65535, null: false
+    t.string   "icon",        limit: 255
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
   end
@@ -53,15 +54,39 @@ ActiveRecord::Schema.define(version: 20200330164637) do
   add_index "news", ["agency_feed_id"], name: "index_news_on_agency_feed_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "name",          limit: 255,             null: false
-    t.string   "email",         limit: 255,             null: false
-    t.string   "password",      limit: 255,             null: false
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.integer  "token_version", limit: 4,   default: 1, null: false
+    t.string   "name",            limit: 255,             null: false
+    t.string   "email",           limit: 255,             null: false
+    t.string   "password_digest", limit: 255,             null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.integer  "token_version",   limit: 4,   default: 1, null: false
   end
+
+  create_table "users_agencies", force: :cascade do |t|
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.integer  "user_id",    limit: 4
+    t.integer  "agency_id",  limit: 4
+  end
+
+  add_index "users_agencies", ["agency_id"], name: "index_users_agencies_on_agency_id", using: :btree
+  add_index "users_agencies", ["user_id"], name: "index_users_agencies_on_user_id", using: :btree
+
+  create_table "users_categories", force: :cascade do |t|
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+    t.integer  "user_id",     limit: 4
+    t.integer  "category_id", limit: 4
+  end
+
+  add_index "users_categories", ["category_id"], name: "index_users_categories_on_category_id", using: :btree
+  add_index "users_categories", ["user_id"], name: "index_users_categories_on_user_id", using: :btree
 
   add_foreign_key "agency_feeds", "agencies"
   add_foreign_key "agency_feeds", "categories"
   add_foreign_key "news", "agency_feeds"
+  add_foreign_key "users_agencies", "agencies"
+  add_foreign_key "users_agencies", "users"
+  add_foreign_key "users_categories", "categories"
+  add_foreign_key "users_categories", "users"
 end

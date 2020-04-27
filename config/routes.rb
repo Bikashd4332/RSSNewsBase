@@ -48,8 +48,15 @@ Rails.application.routes.draw do
   ##
   # Forward all the requests to static controller unless its an api
   # request.
-  get '*page', to: 'static#index', constraint: ->(req) do
+  get '/app/*s', to: 'static#index', format: false, constraint: ->(req) do
     !req.xhr? && req.format.html?
   end
+  ##
+  # Fallback to app root
+  get '/app', to: 'static#index', format: false, constraint: ->(req) do
+    !req.xhr? && req.format.html?
+  end
+  ##
+  # Last resort
   root to: 'static#index'
 end

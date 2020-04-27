@@ -2,7 +2,7 @@ json.partial! @news, partial: 'api/v1/news/news', as: :news
 
 json.category do
   json.id news.category_id
-  json.title news.category_title
+  json.name news.category_name
 end
 
 json.provider do

@@ -25,10 +25,19 @@ class News < ActiveRecord::Base
 
   ##
   # Delegation of property
-  delegate :category_title, to: :agency_feed, prefix: false
+  delegate :category_name, to: :agency_feed, prefix: false
   delegate :agency_name, to: :agency_feed, prefix: false
   delegate :agency_id, to: :agency_feed, prefix: false
   delegate :category_id, to: :agency_feed, prefix: false
+
+  ##
+  # Only give the news of specific categories and agencies
+  # a user wants to have.
+  scope :preference_of, ->(user){
+    joins(:agency_feed)
+      .joins('RIGHT JOIN users_categories ON agency_feeds.category_id = users_categories.category_id')
+      .joins('RIGHT JOIN users_agencies ON agency_feeds.agency_id = users_agencies.agency_id')
+  }
 
   ##
   # function to retireve all the news of 
@@ -37,7 +46,7 @@ class News < ActiveRecord::Base
   def self.fetch_news!(agency_feed) 
     fetched_news = []
     uri = URI(agency_feed.url)
-    logger.info "Fetching from #{agency_feed.url} for category #{agency_feed.category_title}."
+    logger.info "Fetching from #{agency_feed.url} for category #{agency_feed.category_name}."
     xml_body_str = Net::HTTP.get(uri)
     # parse the given xml body which returns Feedjira::Parser::RSSEntry
     xml_parsed_feed = Feedjira.parse xml_body_str
@@ -91,7 +100,7 @@ class News < ActiveRecord::Base
       fetched_data = self.fetch_and_store_news! agency_feed
       fetched << { category_id: agency_feed.category_id,
                    news: fetched_data, 
-                   category_title: agency_feed.category_title}
+                   category_name: agency_feed.category_name}
     end
     return fetched
   end

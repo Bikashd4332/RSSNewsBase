@@ -1,12 +1,12 @@
 class Api::V1::CategoriesController < ApplicationController
   # Require token for protected actions
-  before_action :require_token
+  before_action :require_token, only: [:update, :destroy]
 
   # Validate access token on all actions
-  before_action :validate_access_token
+  before_action :validate_access_token, only: [:update, :destroy]
 
   # Set @category on action call
-  before_action :set_category, only: [:update, :destroy]
+  before_action :set_category, only: [:update, :destroy, :show]
 
   ##
   # GET /categories
@@ -23,9 +23,18 @@ class Api::V1::CategoriesController < ApplicationController
   #
   # Create a news category
   def create
-    @category = Category.create! category_params
-    logger.info "New category #{@category.name} is saved."
+    @category = Category.new category_params
+
+    ## logo_path <#ActionDispact >
+    @category.icon = category_params[:icon]
+    @category.save!
     render :show, status: :created
+  end
+
+  ##
+  # GET /categories/:id
+  def show
+    render :show, status: :ok
   end
 
   ##
@@ -52,13 +61,13 @@ class Api::V1::CategoriesController < ApplicationController
   ##
   # Strict parameters
   def category_params
-    params.require(:category).permit(:id, :title, :description)
+    params.require(:category).permit(:id, :name, :description, :icon)
   end
 
   ##
   # load from db
   def set_category
-    @category = Category.find category_params[:id]
+    @category = Category.find params[:id]
   end
 
 end

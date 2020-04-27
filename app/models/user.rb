@@ -2,6 +2,13 @@ class User < ActiveRecord::Base
   include JWT::Auth::Authenticatable
 
   ##
+  # ActiveRecord associations
+  has_many :users_categories
+  has_many :users_agencies
+  has_many :agencies, through: :users_agencies
+  has_many :category, through: :users_categories
+
+  ##
   # Specifying secure password storage by hashing it
   has_secure_password
 

@@ -1,12 +1,5 @@
 class Api::V1::NewsController < ApplicationController
 
-  #
-  # validate token on action
-  before_action :require_token
-
-  # Verify access token before action
-  before_action :validate_access_token
-
   ##
   # News reducer for filtering based on query param.
   NewsReducer = Rack::Reducer.new(
@@ -18,7 +11,7 @@ class Api::V1::NewsController < ApplicationController
   )
 
   ##
-  # GET /news?fetch=''&category=''.json
+  # GET /news?find=''&category=''.json
   # This action supports pagination of
   # news records.
   def index
