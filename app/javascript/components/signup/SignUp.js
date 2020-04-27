@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Avatar,
   Grid,
@@ -6,22 +6,23 @@ import {
   makeStyles,
   Container,
   Typography
-} from '@material-ui/core';
+} from "@material-ui/core";
+import PropTypes from "prop-types";
 
 import Copyright from "../copyright/Copyright";
-import Logo from '../../../../public/logo.svg'
+import Logo from "../../../../public/logo.svg";
 import SignUpForm from "./SignUpForm";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(5),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
   },
   avatar: {
-    margin: theme.spacing(1),
-  },
+    margin: theme.spacing(1)
+  }
 }));
 
 export default function SignUp({ setLoggedInUser }) {
@@ -29,14 +30,11 @@ export default function SignUp({ setLoggedInUser }) {
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
-        <Grid container justify='center' alignItems='center'>
-          <Grid item >
-            <Avatar
-              className={classes.avatar}
-              variant="square"
-              src={Logo} />
+        <Grid container justify="center" alignItems="center">
+          <Grid item>
+            <Avatar className={classes.avatar} variant="square" src={Logo} />
           </Grid>
-          <Grid item >
+          <Grid item>
             <Typography component="h1" variant="h4">
               NewsForYou
             </Typography>
@@ -53,3 +51,7 @@ export default function SignUp({ setLoggedInUser }) {
     </Container>
   );
 }
+
+SignUp.propTypes = {
+  setLoggedInUser: PropTypes.func.isRequired
+};

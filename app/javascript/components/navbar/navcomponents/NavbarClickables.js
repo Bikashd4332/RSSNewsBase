@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import Gravatar from "react-awesome-gravatar";
+import PropTypes from "prop-types";
 
 // UI Element Import
 import {
@@ -10,7 +11,7 @@ import {
   IconButton,
   makeStyles,
   Button,
-  Avatar
+  Avatar,
 } from "@material-ui/core";
 
 // Icon Import
@@ -23,49 +24,48 @@ import AuthService from "../../../services/AuthService";
 
 const useStyle = makeStyles((theme) => ({
   sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'flex',
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "flex",
     },
   },
   sectionMobile: {
-    display: 'flex',
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
+    display: "flex",
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
     },
   },
 }));
 
-
-export default function NavbarClickables(props) {
+export default function NavbarClickables({
+  loggedInUser,
+  setLoggedInUser,
+  notificationCounts,
+  themePreference,
+  setThemePreference,
+}) {
   const classes = useStyle();
   const history = useHistory();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
-  const isLoggedIn = Boolean(props.loggedInUser);
+  const isLoggedIn = Boolean(loggedInUser);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   // handle logout
   const handleLogOut = () => {
     AuthService.logout();
-    props.setLoggedInUser(null);
-    history.push('/signin');
+    setLoggedInUser(null);
+    history.push("/app/signin");
     handleMenuClose();
-  }
+  };
   // Set the target element at which profile
   // Menu will be drawn.
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
-  // Unset the target element to hide
-  // profile menu that was drawn early.
-  const handleProfileMenuClose = () => {
-    setAnchorEl(null);
-  }
 
   // Set the target element at which
   // the overflow context menu will draw. (MobileView)
@@ -89,47 +89,44 @@ export default function NavbarClickables(props) {
   // handler will be called to set the theme preference
   // onClick of brightness icon.
   const handleThemeChange = () => {
-    props.setThemePreference(
-      (props.themePreference === 'dark') ? 'light' : 'dark'
-    );
-  }
+    setThemePreference(themePreference === "dark" ? "light" : "dark");
+  };
 
-  const menuId = 'primary-search-account-menu';
+  const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       id={menuId}
       keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
       <MenuItem
         component={Link}
-        to={"/customization"}
+        to={"/app/customization"}
         onClick={handleMenuClose}
-      >Customization</MenuItem>
+      >
+        Customization
+      </MenuItem>
       <MenuItem onClick={handleLogOut}>Log out</MenuItem>
     </Menu>
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       id={mobileMenuId}
       keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={handleThemeChange} >
-        <IconButton
-          aria-label="change theme"
-          color="inherit"
-        >
+      <MenuItem onClick={handleThemeChange}>
+        <IconButton aria-label="change theme" color="inherit">
           <BrightnessIcon />
         </IconButton>
         <p>Theme</p>
@@ -143,7 +140,7 @@ export default function NavbarClickables(props) {
         <p>Notifications</p>
       </MenuItem>
 
-      {isLoggedIn &&
+      {isLoggedIn && (
         <MenuItem onClick={handleProfileMenuOpen}>
           <IconButton
             aria-label="account of current user"
@@ -155,21 +152,16 @@ export default function NavbarClickables(props) {
           </IconButton>
           <p>Profile</p>
         </MenuItem>
-      }
+      )}
 
-      {!isLoggedIn &&
-        <MenuItem onClick={handleMenuClose}
-          component={Link}
-          to={'/signin'}>
-          <IconButton
-            aria-label="login button"
-            color="inherit"
-          >
+      {!isLoggedIn && (
+        <MenuItem onClick={handleMenuClose} component={Link} to={"/app/signin"}>
+          <IconButton aria-label="login button" color="inherit">
             <ExitToAppIcon />
           </IconButton>
           <p>Sign In</p>
         </MenuItem>
-      }
+      )}
     </Menu>
   );
 
@@ -177,7 +169,6 @@ export default function NavbarClickables(props) {
     <>
       {/* Menu items on navbar on desktiop view */}
       <div className={classes.sectionDesktop}>
-
         <IconButton
           aria-label="change theme"
           color="inherit"
@@ -187,34 +178,34 @@ export default function NavbarClickables(props) {
         </IconButton>
 
         <IconButton aria-label="show notifications" color="inherit">
-          <Badge badgeContent={props.notificationCounts} color="secondary">
+          <Badge badgeContent={notificationCounts} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
 
-        {!isLoggedIn &&
+        {!isLoggedIn && (
           <Button
             component={Link}
             startIcon={<ExitToAppIcon />}
-            to={'/signin'}
+            to={"/app/signin"}
           >
             Sign In
-          </Button>}
+          </Button>
+        )}
 
-        {isLoggedIn &&
+        {isLoggedIn && (
           <IconButton
             color="inherit"
             size="small"
             aria-label="profile"
             onClick={handleProfileMenuOpen}
           >
-            <Gravatar email={props.loggedInUser.email}>
-              {url => <Avatar src={url} />}
+            <Gravatar email={loggedInUser.email}>
+              {(url) => <Avatar src={url} />}
             </Gravatar>
           </IconButton>
-        }
+        )}
       </div>
-
 
       {/* Menu items on navbar in mobile view*/}
       <div className={classes.sectionMobile}>
@@ -233,3 +224,13 @@ export default function NavbarClickables(props) {
     </>
   );
 }
+NavbarClickables.propTypes = {
+  loggedInUser: PropTypes.shape({
+    email: PropTypes.string.isRequired,
+  }).isRequired,
+  setLoggedInUser: PropTypes.func.isRequired,
+  notificationCounts: PropTypes.number.isRequired,
+  themePreference: PropTypes.string.isRequired,
+  setThemePreference: PropTypes.func.isRequired,
+};
+
