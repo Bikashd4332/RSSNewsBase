@@ -1,9 +1,10 @@
-const API = '/api/v1/news.json';
-const NEWS_API_COUNT_UPDATE = '/api/v1/news/up_click_count';
+import AuthService from "./AuthService";
 
+const API = "/api/v1/news.json";
+const NEWS_API_COUNT_UPDATE = "/api/v1/news/up_click_count";
+const USERS_NEWS_API = "/api/v1/users_news.json";
 
 class ParsePaginationRespnseHeaders {
-
   constructor(linkResponseStr) {
     // Init
     this.linkResponseStr = linkResponseStr;
@@ -13,25 +14,20 @@ class ParsePaginationRespnseHeaders {
     this.firstUrl = null;
 
     // Each url portion has a rel which points what the url is for.
-    this.linkResponseStr.split(', ')
-      .forEach(urlPart => {
-        const [url, rel] = urlPart.split('; ');
-        if (rel === 'rel="next"')
-          this.nextUrl = this.cleanseUrl(url)
-        else if (rel === 'rel="prev"')
-          this.prevUrl = this.cleanseUrl(url)
-        else
-          this.firstUrl = this.cleanseUrl(url)
-      });
+    this.linkResponseStr.split(", ").forEach(urlPart => {
+      const [url, rel] = urlPart.split("; ");
+      if (rel === 'rel="next"') this.nextUrl = this.cleanseUrl(url);
+      else if (rel === 'rel="prev"') this.prevUrl = this.cleanseUrl(url);
+      else this.firstUrl = this.cleanseUrl(url);
+    });
   }
   // Each url in the format <url>. Need to get those '<' stripped out.
   cleanseUrl(url) {
-    return url.replace('<', '').replace('>', '');
+    return url.replace("<", "").replace(">", "");
   }
 }
 
 class NewsFetchService {
-
   constructor() {
     // Setting variables up for pagination
     this.hasMore = false;
@@ -41,14 +37,13 @@ class NewsFetchService {
 
   /* function for retrieving the list of news */
   async fetchNews(searchString, categoryId, agencyId, requestingMore) {
-
     // abort the previous fetch and do a brand new.
     this.abortController.abort();
     this.abortController = new AbortController();
 
     let url = null;
     let param = {};
-    const headers = { 'Authorization': localStorage.getItem('accessToken')};
+    let headers = null;
     // Initial request shoud use API, follow up request use nextUrl
     if (this.hasMore && requestingMore) {
       url = this.parsePagniation.nextUrl;
@@ -57,35 +52,45 @@ class NewsFetchService {
       return [];
     } else {
       // prepare for the brand new fetch
-      url = API;
+      url = AuthService.isLoggedIn() ? USERS_NEWS_API : API;
       // prepare query param.
       if (categoryId !== 0) {
         param.category = categoryId;
       }
       if (searchString) {
-        param.find = searchString
-      } categoryId
+        param.find = searchString;
+      }
+      categoryId;
       if (agencyId !== 0) {
         param.agency = agencyId;
       }
     }
+
+    // USERS_NEWS_API requires accessToken
+    headers = AuthService.isLoggedIn()
+      ? { Authorization: AuthService.accessToken }
+      : {};
     // Attach the prepared queryparam.
-    url += '?' + new URLSearchParams(param).toString();
+    url += "?" + new URLSearchParams(param).toString();
     // make reqeust and fetch data.
     try {
-      const newsItems = await fetch(url, { signal: this.abortController.signal, headers})
-        .then(response => {
-          if (response.headers.has('Link')) {
-            this.parsePagniation = new ParsePaginationRespnseHeaders(response.headers.get('Link'));
-            this.hasMore = (this.parsePagniation.nextUrl) ? true : false;
-          }
-          return response.json();
-        })
+      const newsItems = await fetch(url, {
+        signal: this.abortController.signal,
+        headers
+      }).then(response => {
+        if (response.headers.has("Link")) {
+          this.parsePagniation = new ParsePaginationRespnseHeaders(
+            response.headers.get("Link")
+          );
+          this.hasMore = this.parsePagniation.nextUrl ? true : false;
+        }
+        return response.json();
+      });
       // provide the fetched records.
       return newsItems;
     } catch (exception) {
       // when fetch aborted exception gets raised.
-      if (exception.name === 'AbortError') {
+      if (exception.name === "AbortError") {
         return null;
       }
     }
@@ -94,30 +99,30 @@ class NewsFetchService {
   clear() {
     // clear all the states so that intermediate search can be done.
     this.parsePagniation = null;
-    this.hasMore = false
+    this.hasMore = false;
   }
- 
+
   // Increases the clickCount of news by 1 on click of news
   async increaseClickCountOf(newsId) {
     const headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem("accessToken"),
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("accessToken")
     };
     const body = { id: newsId };
-    const clickCount = await fetch(
-      NEWS_API_COUNT_UPDATE,
-      { method: 'POST', headers, body: JSON.stringify(body) }
-    ).then(response => {
+    const clickCount = await fetch(NEWS_API_COUNT_UPDATE, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body)
+    }).then(response => {
       if (!response.ok) {
-        throw new Error('failed to update count');
+        throw new Error("failed to update count");
       } else {
         response.json();
       }
-    })
+    });
     return clickCount;
   }
- }
-
+}
 
 export default new NewsFetchService();

@@ -1,85 +1,106 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-  Grid,
   Paper,
-  Typography,
   makeStyles,
   Container,
+  Tab,
+  Tabs,
+  AppBar,
+  useTheme,
+  Snackbar
 } from "@material-ui/core";
-import Gravatar from 'react-awesome-gravatar';
-import ProfilePlaceholder from '../../../../public/user-placeholder.jpg'
-
-// for relative time
-import TimeAgo from 'javascript-time-ago';
-import localeEN from 'javascript-time-ago/locale/en';
+import { Alert } from "@material-ui/lab";
+import SwipeableViews from "react-swipeable-views";
+import UserLoginStateContext from "../contexts/UserLoginStatecontext";
+import UserProfile from "./UserProfile";
+import CategoriesPanel from "./CategoriesPanel";
+import AgenciesPanel from "./AgenciesPanel";
 
 const useStyle = makeStyles(theme => ({
   root: {
     marginTop: theme.spacing(3)
   },
-  paper: {
+  userPaper: {
     padding: theme.spacing(3)
   },
-  profile: {
-    borderRadius: '50%',
-    border: 5,
-    width: 200,
-    height: 200,
-    borderStyle: 'solid',
-    borderColor: theme.palette.grey,
-    display: 'block',
-    margin: 'auto'
-  },
-  info: {
-    paddingTop: theme.spacing(2)
-  },
+  selectionTab: {
+    marginTop: theme.spacing(3),
+    padding: theme.spacing(3)
+  }
 }));
 
-const gravatarOptions = {
-  size: 200
-};
-TimeAgo.addLocale(localeEN);
-
-export default function Customization({ loggedInUser }) {
-  const timeAgo = new TimeAgo('en-US');
+export default function Customization() {
   const classes = useStyle();
+  // state representing which tab is currently open.
+  const [value, setValue] = useState(0);
+  const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const theme = useTheme();
+
+  // set the state to the index of which tab is clicked.
+  const handleChange = (_, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleCloseError = () => setIsError(false);
+  const handleCloseSuccess = () => setIsSuccess(false);
+
   return (
     <Container maxWidth="md" className={classes.root}>
-      <Paper className={classes.paper}>
-        <Grid container spacing={2} justify="space-around" alignItems="center">
-          <Grid item xs={12} sm={4}> 
-            <Gravatar email={loggedInUser.email} options={gravatarOptions}>
-              {url => 
-               <img 
-                  className={classes.profile}
-                  src={url}
-                  onError={(e => e.target.src=ProfilePlaceholder)}
-                />
-              }
-            </Gravatar>
-          </Grid>
-          <Grid item xs={12} sm={8} className={classes.bio}>
-            <Typography variant="h3" component="h3">
-              {loggedInUser.name}
-            </Typography>
-            <Typography variant="p">
-              {loggedInUser.email}
-            </Typography>
-            <div className={classes.info}>
-              <Typography variant="p" component="h4">
-                User ID: { loggedInUser.id }
-              </Typography>
-              <Typography variant="p" component="h4">
-                User Since: {timeAgo.format(Date.parse(loggedInUser.created_at))}
-              </Typography>
-              <Typography variant="p" component="h4">
-                Account Customization Since: {timeAgo.format(Date.parse(loggedInUser.updated_at))}
-              </Typography>
-            </div>
-          </Grid>
-        </Grid>
+      <Paper className={classes.userPaper}>
+        <UserLoginStateContext.Consumer>
+          {userLoginProps => <UserProfile {...userLoginProps} />}
+        </UserLoginStateContext.Consumer>
+      </Paper>
+
+      <Paper className={classes.selectionTab}>
+        <AppBar position="static" color="default">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="Categories and Agencies selection tab"
+          >
+            <Tab label="Categories" />
+            <Tab label="Agencies" />
+          </Tabs>
+        </AppBar>
+        <SwipeableViews
+          axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+          index={value}
+          onChangeIndex={handleChange}
+        >
+          <CategoriesPanel
+            value={value}
+            index={0}
+            setIsSuccess={setIsSuccess}
+            setIsError={setIsError}
+          />
+          <AgenciesPanel
+            value={value}
+            index={1}
+            setIsError={setIsError}
+            setIsSuccess={setIsSuccess}
+          />
+        </SwipeableViews>
+        <Snackbar
+          open={isError}
+          autoHideDuration={6000}
+          onClose={handleCloseError}
+        >
+          <Alert onClose={handleCloseError} severity="error">
+            Backend experienced problem in updating. Try after sometime.
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={isSuccess}
+          autoHideDuration={6000}
+          onClose={handleCloseSuccess}
+        >
+          <Alert onClose={handleCloseSuccess} severity="success">
+            Successfully Updated.
+          </Alert>
+        </Snackbar>
       </Paper>
     </Container>
   );
 }
-

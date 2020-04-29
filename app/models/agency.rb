@@ -1,8 +1,11 @@
 class Agency < ActiveRecord::Base
   ##
   # ActiveRecord associations
-  has_many :news
-  has_many :agency_feed
+  has_many :agency_feeds
+  has_many :categories, through: :agency_feeds
+  has_many :users_agencies
+  has_many :users, through: :users_agencies
+
 
   ##
   # Adding  file upload handler

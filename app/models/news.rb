@@ -22,6 +22,7 @@ class News < ActiveRecord::Base
                         :updated_at,
                         :click_count,
                         :agency_feed_id
+  validates_uniqueness_of :id
 
   ##
   # Delegation of property
@@ -33,11 +34,12 @@ class News < ActiveRecord::Base
   ##
   # Only give the news of specific categories and agencies
   # a user wants to have.
-  scope :preference_of, ->(user){
-    joins(:agency_feed)
-      .joins('RIGHT JOIN users_categories ON agency_feeds.category_id = users_categories.category_id')
-      .joins('RIGHT JOIN users_agencies ON agency_feeds.agency_id = users_agencies.agency_id')
-  }
+  scope :preferrence_of, ->(user){
+     joins(:agency_feed)
+       .joins('RIGHT JOIN users_categories ON agency_feeds.category_id = users_categories.category_id')
+       .joins('INNER JOIN users_agencies ON agency_feeds.agency_id = users_agencies.agency_id')
+   }
+
 
   ##
   # function to retireve all the news of 
