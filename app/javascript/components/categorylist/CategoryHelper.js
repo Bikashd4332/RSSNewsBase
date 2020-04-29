@@ -3,33 +3,31 @@ import {
   ListItemText,
   ListItem,
   ListItemIcon,
-  Typography,
-  makeStyles,
+  makeStyles
 } from "@material-ui/core";
-import { Skeleton } from "@material-ui/lab";
 import LabelOutlinedIcon from "@material-ui/icons/LabelOutlined";
 import ListAltIcon from "@material-ui/icons/Label";
-import EmptyIconSmall from "../../../../public/empty-box-small.svg"
+import PropType from "prop-types";
 
 // Style for empty categories view
-const emptyStyle = makeStyles(theme => ({
-  iconRoot: {
-    margin: theme.spacing(3),
+const useStyle = makeStyles(theme => ({
+  categoryIcon: {
+    display: "inline-block",
+    width: 20,
+    height: 20
   },
-  emptyIcon: {
-    width: 60,
-    height: 60,
-    display: 'block',
-    margin: 'auto',
-  },
-  emptyNotice: {
-    fontSize: 10,
-    display: 'inline-block',
+  selected: {
+    backgroundColor: theme.palette.action.selected
   }
-
 }));
 
-const renderCategoryListItems = (categoryLists, selectedCategory, setCategory) => {
+// style for list image iconse
+export default function CategoryRenderList({
+  categories,
+  selectedCategory,
+  setCategory
+}) {
+  const classes = useStyle();
   return (
     <>
       <ListItem
@@ -37,32 +35,30 @@ const renderCategoryListItems = (categoryLists, selectedCategory, setCategory) =
         key={0}
         divider
         onClick={() => setCategory(0)}
+        className={`${0 === selectedCategory && classes.selected}`}
       >
-        <ListItemIcon >
-          {0 === selectedCategory
-            ? <ListAltIcon />
-            : <LabelOutlinedIcon />}
+        <ListItemIcon>
+          {0 === selectedCategory ? <ListAltIcon /> : <LabelOutlinedIcon />}
         </ListItemIcon>
         <ListItemText
           primary={"All"}
-          primaryTypographyProps={{ "variant": "inherit" }}
+          primaryTypographyProps={{ variant: "inherit" }}
         />
       </ListItem>
-      {categoryLists.map((category) => (
+      {categories.map(category => (
         <ListItem
           button
           key={category.id}
           divider
+          className={`${category.id === selectedCategory && classes.selected}`}
           onClick={() => setCategory(category.id)}
         >
-          <ListItemIcon >
-            {category.id === selectedCategory
-              ? <ListAltIcon />
-              : <LabelOutlinedIcon />}
+          <ListItemIcon>
+            <img src={category.icon.url} className={classes.categoryIcon} />
           </ListItemIcon>
           <ListItemText
-            primary={category.title}
-            primaryTypographyProps={{ "variant": "inherit" }}
+            primary={category.name}
+            primaryTypographyProps={{ variant: "inherit" }}
           />
         </ListItem>
       ))}
@@ -70,45 +66,18 @@ const renderCategoryListItems = (categoryLists, selectedCategory, setCategory) =
   );
 }
 
-const renderLoading = () => {
-  return (
-    <>
-      {[1, 2, 3, 4].map(category => (
-        <ListItem button key={category.id} divider>
-          <ListItemIcon >
-            <LabelOutlinedIcon />
-          </ListItemIcon>
-          <Skeleton component="p" width={'100%'} />
-        </ListItem>
-      ))}
-    </>
-  )
-}
-
-const renderEmpty = () => {
-  const classes = emptyStyle();
-  return (
-    <>
-      <div className={classes.iconRoot}>
-        <img src={EmptyIconSmall} className={classes.emptyIcon} />
-      </div>
-      <Typography variant="inherit"
-        component="p"
-        color="textSecondary"
-        align="center"
-      >
-        No categories available.
-      </Typography>
-      <Typography
-        component="i"
-        color="textSecondary"
-        align="center"
-        className={classes.emptyNotice}
-      >
-        You should customize your account to add agencies.
-      </Typography>
-    </>
-  )
-}
-
-export { renderEmpty, renderLoading, renderCategoryListItems };
+const categoryPropType = {
+  name: PropType.string.isRequired,
+  id: PropType.number.isRequired,
+  icon: PropType.shape({
+    url: PropType.string.isRequired
+  }),
+  created_at: PropType.string,
+  updated_at: PropType.string
+};
+// Prop validation for renderCategory
+CategoryRenderList.propTypes = {
+  categories: PropType.arrayOf(PropType.shape(categoryPropType)),
+  selectedCategory: PropType.number,
+  setCategory: PropType.func.isRequired
+};

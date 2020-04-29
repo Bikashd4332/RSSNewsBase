@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  makeStyles,
-  List,
-  Typography,
-  Paper
-} from "@material-ui/core";
+import { makeStyles, List, Typography, Paper } from "@material-ui/core";
+import PropTypes from "prop-types";
 
 import AgencyFetchService from "../../services/AgencyFetchService";
-import { makeAgencyList, renderAgencyEmpty, renderAgencyLoading } from "./AgencyListHelper";
+import AgencyListEmpty from "./AgencyListEmpty";
+import AgencyListRender from "./AgencyListHelper";
+import AgencyListLoading from "./AgencyListLoading";
 
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles(theme => ({
   root: {
-    width: '100%',
+    width: "100%",
     marginTop: theme.spacing(2),
     maxHeight: 350,
     overflowY: "scroll"
@@ -20,9 +18,9 @@ const useStyle = makeStyles((theme) => ({
     textAlign: "center",
     fontSize: 14,
     color: theme.palette.text.secondary,
-    'borderBottom': '1px solid #e3e3e3',
+    borderBottom: "1px solid #e3e3e3",
     padding: theme.spacing(1)
-  },
+  }
 }));
 
 export default function AgencyList({ selectedAgency, setAgency }) {
@@ -36,12 +34,12 @@ export default function AgencyList({ selectedAgency, setAgency }) {
       setIsLoading(true);
       const agencies = await AgencyFetchService.fetch();
       if (agencies.length) {
+        setAgencies(agencies);
         setIsLoading(false);
         setIsEmpty(false);
-        setAgencies(agencies);
       } else {
-        setIsLoading(false);
         setIsEmpty(true);
+        setIsLoading(false);
       }
     };
     fetchService();
@@ -49,19 +47,27 @@ export default function AgencyList({ selectedAgency, setAgency }) {
 
   return (
     <Paper elevation={3} className={classes.root}>
-      <Typography
-        component="p"
-        className={classes.smallHeader}
-      >
+      <Typography component="p" className={classes.smallHeader}>
         RSS Providers
       </Typography>
       <List>
-        {isLoading
-          ? renderAgencyLoading()
-          : isEmpty
-            ? renderAgencyEmpty()
-            : makeAgencyList(agencies, selectedAgency, setAgency)}
+        {isLoading ? (
+          <AgencyListLoading />
+        ) : isEmpty ? (
+          <AgencyListEmpty />
+        ) : (
+          <AgencyListRender
+            setAgency={setAgency}
+            agencyList={agencies}
+            selectedAgency={selectedAgency}
+          />
+        )}
       </List>
     </Paper>
   );
 }
+
+AgencyList.propTypes = {
+  setAgency: PropTypes.func.isRequired,
+  selectedAgency: PropTypes.number.isRequired
+};
