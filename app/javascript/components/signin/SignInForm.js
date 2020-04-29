@@ -1,11 +1,12 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import {
   makeStyles,
   FormControlLabel,
   Checkbox,
   Snackbar,
   CircularProgress
-} from '@material-ui/core';
+} from "@material-ui/core";
+import PropTypes from "prop-types";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { Alert } from "@material-ui/lab";
 import { useHistory, useLocation } from "react-router-dom";
@@ -13,28 +14,28 @@ import { useHistory, useLocation } from "react-router-dom";
 import AuthService from "../../services/AuthService";
 import SigninAction from "./SiginAction";
 
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles(theme => ({
   form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(3, 0, 2)
   },
   progressDiv: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center'
+    width: "100%",
+    display: "flex",
+    justifyContent: "center"
   }
-}))
+}));
 
 const SignInForm = ({ setLoggedInUser }) => {
   const history = useHistory();
   const location = useLocation();
   const classes = useStyle();
   // value states for text email and password.
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   // auth state.
   const [authState, setAuthState] = useState(false);
   // Loading state.
@@ -50,7 +51,7 @@ const SignInForm = ({ setLoggedInUser }) => {
       if (location.state) {
         history.push(location.state.from);
       } else {
-        history.push('/news');
+        history.push("/app/news");
       }
     } catch (message) {
       setIsLoading(false);
@@ -64,10 +65,7 @@ const SignInForm = ({ setLoggedInUser }) => {
 
   return (
     <>
-      <ValidatorForm
-        className={classes.form}
-        onSubmit={handleSubmit}
-      >
+      <ValidatorForm className={classes.form} onSubmit={handleSubmit}>
         <TextValidator
           variant="outlined"
           margin="normal"
@@ -77,7 +75,7 @@ const SignInForm = ({ setLoggedInUser }) => {
           id="email"
           label="Email Address"
           name="email"
-          validators={['required', 'isEmail']}
+          validators={["required", "isEmail"]}
           errorMessages={["Email is required.", "Please enter a valid email."]}
           autoComplete="email"
           autoFocus
@@ -87,12 +85,15 @@ const SignInForm = ({ setLoggedInUser }) => {
           margin="normal"
           fullWidth
           value={password}
-          errorMessages={["Password is required.", "Please enter a valid password."]}
+          errorMessages={[
+            "Password is required.",
+            "Please enter a valid password."
+          ]}
           onChange={handlePasswordChange}
           name="password"
           label="Password"
           type="password"
-          validators={['required']}
+          validators={["required"]}
           id="password"
           autoComplete="current-password"
         />
@@ -100,11 +101,13 @@ const SignInForm = ({ setLoggedInUser }) => {
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
         />
-        {isLoading
-          ? <div className={classes.progressDiv}>
-              <CircularProgress thickness={5} />
-            </div>
-          : <SigninAction />}
+        {isLoading ? (
+          <div className={classes.progressDiv}>
+            <CircularProgress thickness={5} />
+          </div>
+        ) : (
+          <SigninAction />
+        )}
       </ValidatorForm>
       <Snackbar open={authState} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
@@ -113,6 +116,10 @@ const SignInForm = ({ setLoggedInUser }) => {
       </Snackbar>
     </>
   );
-}
+};
+
+SignInForm.propTypes = {
+  setLoggedInUser: PropTypes.func.isRequired
+};
 
 export default SignInForm;

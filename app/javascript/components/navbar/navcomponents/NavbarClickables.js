@@ -11,7 +11,7 @@ import {
   IconButton,
   makeStyles,
   Button,
-  Avatar,
+  Avatar
 } from "@material-ui/core";
 
 // Icon Import
@@ -22,19 +22,19 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import AuthService from "../../../services/AuthService";
 
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles(theme => ({
   sectionDesktop: {
     display: "none",
     [theme.breakpoints.up("sm")]: {
-      display: "flex",
-    },
+      display: "flex"
+    }
   },
   sectionMobile: {
     display: "flex",
     [theme.breakpoints.up("sm")]: {
-      display: "none",
-    },
-  },
+      display: "none"
+    }
+  }
 }));
 
 export default function NavbarClickables({
@@ -42,7 +42,7 @@ export default function NavbarClickables({
   setLoggedInUser,
   notificationCounts,
   themePreference,
-  setThemePreference,
+  setThemePreference
 }) {
   const classes = useStyle();
   const history = useHistory();
@@ -63,7 +63,7 @@ export default function NavbarClickables({
   };
   // Set the target element at which profile
   // Menu will be drawn.
-  const handleProfileMenuOpen = (event) => {
+  const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -82,7 +82,7 @@ export default function NavbarClickables({
 
   // Set the target element where mobile menu
   // will be drawn.
-  const handleMobileMenuOpen = (event) => {
+  const handleMobileMenuOpen = event => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
@@ -201,7 +201,7 @@ export default function NavbarClickables({
             onClick={handleProfileMenuOpen}
           >
             <Gravatar email={loggedInUser.email}>
-              {(url) => <Avatar src={url} />}
+              {url => <Avatar src={url} />}
             </Gravatar>
           </IconButton>
         )}
@@ -226,11 +226,10 @@ export default function NavbarClickables({
 }
 NavbarClickables.propTypes = {
   loggedInUser: PropTypes.shape({
-    email: PropTypes.string.isRequired,
-  }).isRequired,
+    email: PropTypes.string.isRequired
+  }),
   setLoggedInUser: PropTypes.func.isRequired,
-  notificationCounts: PropTypes.number.isRequired,
+  notificationCounts: PropTypes.number,
   themePreference: PropTypes.string.isRequired,
-  setThemePreference: PropTypes.func.isRequired,
+  setThemePreference: PropTypes.func.isRequired
 };
-

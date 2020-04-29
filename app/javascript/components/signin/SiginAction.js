@@ -1,17 +1,12 @@
 import React from "react";
-import {
-  Button,
-  Grid,
-  Link as MuiLink,
-  makeStyles
-} from "@material-ui/core";
+import { Button, Grid, Link as MuiLink, makeStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles(theme => ({
   submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}))
+    margin: theme.spacing(3, 0, 2)
+  }
+}));
 
 const SigninAction = () => {
   const classes = useStyle();
@@ -25,19 +20,15 @@ const SigninAction = () => {
         className={classes.submit}
       >
         Sign In
-    </Button>
+      </Button>
       <Grid container>
         <Grid item xs>
           <MuiLink href="#" variant="body2">
             Forgot password?
-    </MuiLink>
+          </MuiLink>
         </Grid>
         <Grid item>
-          <MuiLink
-            variant="body2"
-            to='/signup'
-            component={Link}
-          >
+          <MuiLink variant="body2" to="/app/signup" component={Link}>
             {"Don't have an account? Sign Up"}
           </MuiLink>
         </Grid>
