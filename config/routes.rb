@@ -15,6 +15,10 @@ Rails.application.routes.draw do
       resources :categories
 
       ##
+      # GET, PUT, POST, PATCH, DELETE for categories
+      resources :users_categories, except: [:update, :show, :new]
+
+      ##
       # GET, PUT, POST, PATCH, DELETE for users
       resources :users, except: [:destroy, :new]
 
@@ -40,8 +44,16 @@ Rails.application.routes.draw do
       end
 
       ##
+      # GET
+      resources :users_news, only: [:index]
+
+      ##
       # GET, POST, DELETE, PATCH/PUT
       resources :agencies
+
+      ##
+      # GET, POST, DELETE, PATCH/PUT
+      resources :users_agencies, except: [:update, :show, :new]
     end
   end
 
