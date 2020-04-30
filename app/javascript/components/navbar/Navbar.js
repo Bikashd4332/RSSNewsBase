@@ -39,7 +39,7 @@ function Navbar({
     // update the state navbar which is in parent component.
     if (e.key === "Enter") {
       setNavbarAction({ searchText: e.target.value });
-      if (history.location !== "/") history.push("/news");
+      if (history.location !== "/app/news") history.push("/app/news");
     }
   };
   const handleClear = () => {

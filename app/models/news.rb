@@ -36,16 +36,18 @@ class News < ActiveRecord::Base
   # a user wants to have.
   scope :preferrence_of, ->(user){
      joins(:agency_feed)
-       .joins('RIGHT JOIN users_categories ON agency_feeds.category_id = users_categories.category_id')
+       .joins('INNER JOIN users_categories ON agency_feeds.category_id = users_categories.category_id')
        .joins('INNER JOIN users_agencies ON agency_feeds.agency_id = users_agencies.agency_id')
+       .where('users_categories.user_id = ?', user.id)
+       .where('users_agencies.user_id = ?', user.id)
    }
 
 
   ##
-  # function to retireve all the news of 
+  # function to retireve all the news of
   # a specific agency_feed
   # param :agency_feed => ActiveRecord::Model
-  def self.fetch_news!(agency_feed) 
+  def self.fetch_news!(agency_feed)
     fetched_news = []
     uri = URI(agency_feed.url)
     logger.info "Fetching from #{agency_feed.url} for category #{agency_feed.category_name}."
@@ -75,13 +77,13 @@ class News < ActiveRecord::Base
   end
 
   ##
-  # function to retrieve all the news of 
+  # function to retrieve all the news of
   # a specific agency_feed and storing into db.
   # param :agency_feed => ActiveRecord::Model
   def self.fetch_and_store_news!(agency_feed)
     unless agency_feed.new_record?
       ##
-      # do not allow to store news from an agency_feed 
+      # do not allow to store news from an agency_feed
       # which itself is not stored.
       fetched_data = self.fetch_news! agency_feed
       fetched_data.each do |news|
@@ -101,7 +103,7 @@ class News < ActiveRecord::Base
     AgencyFeed.all.each do |agency_feed|
       fetched_data = self.fetch_and_store_news! agency_feed
       fetched << { category_id: agency_feed.category_id,
-                   news: fetched_data, 
+                   news: fetched_data,
                    category_name: agency_feed.category_name}
     end
     return fetched
