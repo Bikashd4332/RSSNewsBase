@@ -8,7 +8,7 @@ class Api::V1::UsersCategoriesController < ApplicationController
   # GET /users_categories.json
   def index
     @categories = UsersCategory.preferrence_of current_user
-    render template: 'api/v1/categories/index', status: :ok
+    render template: 'api/v1/categories/index', locals: { current_user: current_user }, status: :ok
   end
 
   ##

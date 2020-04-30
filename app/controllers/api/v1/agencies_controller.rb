@@ -14,7 +14,7 @@ class Api::V1::AgenciesController < ApplicationController
   # GET /agencies.json
   def index
     @agencies = Agency.all
-    render :index, status: :ok
+    render :index , status: :ok, locals:{ current_user: current_user }
   end
 
   ##

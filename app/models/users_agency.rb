@@ -30,7 +30,7 @@ class UsersAgency < ActiveRecord::Base
   end
 
   def self.selected?(user_id, agency_id)
-    UsersAgency.where(user_id: user_id, agency_id: agency_id).exist?
+    UsersAgency.where(user_id: user_id, agency_id: agency_id).exists?
   end
 
 end

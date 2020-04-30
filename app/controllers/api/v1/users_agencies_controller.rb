@@ -12,7 +12,8 @@ class Api::V1::UsersAgenciesController < ApplicationController
   def index
     # Fetch all the categories the current user has preferred.
     @agencies = UsersAgency.preferrence_of current_user
-    render template: 'api/v1/agencies/index', status: :ok
+    render template: 'api/v1/agencies/index', locals: { current_user: current_user }, status: :ok
+
   end
 
   ##

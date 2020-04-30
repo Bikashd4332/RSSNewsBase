@@ -27,7 +27,8 @@ class CategoryFetchService {
 
   // this is always fetches complete records even if any user is logged in.
   async fetchAll() {
-    const categoryList = await fetch(ALL_CATEGORY_FETCH_API).then(response =>
+    const headers = { Authorization: AuthService.accessToken };
+    const categoryList = await fetch(ALL_CATEGORY_FETCH_API, { headers }).then(response =>
       response.json()
     );
     this.recentlyFetchedCategories = categoryList;

@@ -15,7 +15,7 @@ class Api::V1::CategoriesController < ApplicationController
   # table
   def index
     @categories = Category.all
-    render :index, status: :ok
+    render :index , status: :ok, locals:{ current_user: current_user }
   end
 
   ##

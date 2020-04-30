@@ -22,7 +22,8 @@ class AgencyFetchService {
 
   // this is always fetches complete records even if any user is logged in.
   async fetchAll() {
-    const agencies = await fetch(ALL_AGENCY_API).then(response =>
+    const headers = { Authorization: AuthService.accessToken };
+    const agencies = await fetch(ALL_AGENCY_API, { headers }).then(response =>
       response.json()
     );
     this.recentlyFetchedAgencies = agencies;
