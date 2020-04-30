@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
     # if id matched to -1 then consider it
     # to be the default user.
     return self.get_default_user if params[:id] == -1
-    find_by params[:id]
+    find params[:id]
   end
 
   ##
