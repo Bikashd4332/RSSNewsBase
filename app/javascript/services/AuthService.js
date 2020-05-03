@@ -13,14 +13,13 @@ class AuthService {
     this.getSession();
   }
   // For initiating auth to backend api.
-  async authenticate(email, password) {
+  async authenticate(email, password, remember = false) {
     // Get refresh token first from the endpoint,
     // it also returns the authenticting user if valid.
     this.user = await this.getRefreshToken(email, password);
     // Get access initial access token.
     await this.getAccessToken();
-    // Store the session to localStorage.
-    this.iAt = Date.now();
+    this.iAt = this.getAccessTokenIssuedAt();
     this.setSession();
     return this.user;
   }
@@ -31,30 +30,50 @@ class AuthService {
   }
 
   // for storing the required data in local storage.
-  setSession() {
+  setSession(temp = true) {
     Object.entries({
       refreshToken: this.refreshToken,
       accessToken: this.accessToken,
-      user: JSON.stringify(this.user)
+      user: JSON.stringify(this.user),
+      iAt: this.iAt
     }).forEach(([key, value]) => {
-      localStorage.setItem(key, value);
+      if (temp) {
+        sessionStorage.setItem(key, value);
+      } else {
+        localStorage.setItem(key, value);
+      }
     });
   }
 
   // find and get the previously set token if present else false.
   getSession() {
     ["refreshToken", "accessToken", "user", "iAt"].forEach(key => {
-      if (key === "user") this.user = JSON.parse(localStorage.getItem(key));
-      else this[key] = localStorage.getItem(key);
+      if (key === "user") {
+        this.user = JSON.parse(
+          localStorage.getItem(key) || sessionStorage.getItem(key)
+        );
+      } else {
+        this[key] = localStorage.getItem(key) || sessionStorage.getItem(key);
+      }
     });
   }
 
   clearSession() {
-    ["refreshToken", "accessToken", "user"].forEach(key => {
+    ["refreshToken", "accessToken", "user", "iAt"].forEach(key => {
       localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
     });
   }
 
+  updateSession() {
+    if (localStorage.getItem("accessToken")) {
+      localStorage.setItem("accessToken", this.accessToken);
+      localStorage.setItem("iAt", this.iAt);
+    } else {
+      sessionStorage.setItem("accessToken", this.accessToken);
+      sessionStorage.setItem("iAt", this.iAt);
+    }
+  }
   // function to get refresh token from backend
   async getRefreshToken(email, password) {
     const headers = {
@@ -124,6 +143,18 @@ class AuthService {
 
   isLoggedIn() {
     return this.user !== null;
+  }
+  checkValidityOfAccessToken() {
+    // Backend gives jwt iat in Seconds from EPOCH.
+    const tokenIssuedDate = new Date(this.iAt * 1000); // convert to milisec
+    const hoursElapsed = Math.ceil(
+      (Date.now() - tokenIssuedDate) / (1000 * 60 * 60) // convert back to hours
+    );
+    return hoursElapsed >= 1.7;
+  }
+
+  getAccessTokenIssuedAt() {
+    return JSON.parse(atob(this.accessToken.split(".")[1])).iat;
   }
 }
 

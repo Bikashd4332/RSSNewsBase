@@ -103,8 +103,8 @@ function PostList({ navbarActions, showPostsOf, classes }) {
 }
 
 PostList.propTypes = {
-  navbarActions: PropTypes.string.isRequired,
-  showPostsOf: PropTypes.number,
+  navbarActions: PropTypes.shape({ searchText: PropTypes.string.isRequired }).isRequired,
+  showPostsOf: PropTypes.shape({ category: PropTypes.number, agency: PropTypes.number}),
   classes: PropTypes.object.isRequired
 };
 

@@ -1,10 +1,12 @@
 import AuthService from "./AuthService";
+import AuthRefreshable from "./AuthRefreshable";
 
 const ALL_CATEGORY_FETCH_API = "/api/v1/categories.json";
 const USER_CATEGORY_FETCH_API = "/api/v1/users_categories.json";
 
-class CategoryFetchService {
+class CategoryFetchService extends AuthRefreshable {
   constructor() {
+    super();
     this.recentlyFetchedCategories = [];
   }
 
@@ -17,20 +19,16 @@ class CategoryFetchService {
     const headers = AuthService.isLoggedIn()
       ? { Authorization: AuthService.accessToken }
       : {};
-    const categories = await fetch(url, { headers: headers })
-      .then(response => response.json())
-      .catch(reason => {
-        throw reason;
-      });
+    const categories = await super.makeRequest(url, { headers: headers });
     return categories;
   }
 
   // this is always fetches complete records even if any user is logged in.
   async fetchAll() {
     const headers = { Authorization: AuthService.accessToken };
-    const categoryList = await fetch(ALL_CATEGORY_FETCH_API, { headers }).then(response =>
-      response.json()
-    );
+    const categoryList = await super.makeRequest(ALL_CATEGORY_FETCH_API, {
+      headers
+    });
     this.recentlyFetchedCategories = categoryList;
     return categoryList;
   }
@@ -41,14 +39,10 @@ class CategoryFetchService {
       Authorization: AuthService.accessToken,
       "Content-Type": "application/json"
     };
-    await fetch(USER_CATEGORY_FETCH_API, {
+    await super.makeRequest(USER_CATEGORY_FETCH_API, {
       method: "POST",
       headers,
       body: JSON.stringify({ category_selection: categoryIds })
-    }).then(response => {
-      if (!response.ok) {
-        throw response.statusText;
-      }
     });
   }
 }

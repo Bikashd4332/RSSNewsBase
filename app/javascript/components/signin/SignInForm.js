@@ -40,12 +40,14 @@ const SignInForm = ({ setLoggedInUser }) => {
   const [authState, setAuthState] = useState(false);
   // Loading state.
   const [isLoading, setIsLoading] = useState(false);
+  // Remember state
+  const [isRememberMe, setIsRememberMe] = useState(false);
 
   // Submit logic for user authentication.
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const user = await AuthService.authenticate(email, password);
+      const user = await AuthService.authenticate(email, password, isRememberMe);
       setLoggedInUser(user);
       setIsLoading(false);
       if (location.state) {
@@ -62,6 +64,7 @@ const SignInForm = ({ setLoggedInUser }) => {
   const handleEmailChange = e => setEmail(e.target.value);
   const handlePasswordChange = e => setPassword(e.target.value);
   const handleClose = () => setAuthState(false);
+  const handleRememberMe = () => setIsRememberMe(prevValue => !prevValue)
 
   return (
     <>
@@ -99,6 +102,8 @@ const SignInForm = ({ setLoggedInUser }) => {
         />
         <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
+          value={isRememberMe}
+          onChange={handleRememberMe}
           label="Remember me"
         />
         {isLoading ? (

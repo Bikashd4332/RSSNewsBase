@@ -1,4 +1,5 @@
 import AuthService from "./AuthService";
+import AuthRefreshable from "./AuthRefreshable";
 
 const API = "/api/v1/news.json";
 const NEWS_API_COUNT_UPDATE = "/api/v1/news/up_click_count";
@@ -27,8 +28,9 @@ class ParsePaginationRespnseHeaders {
   }
 }
 
-class NewsFetchService {
+class NewsFetchService extends AuthRefreshable {
   constructor() {
+    super();
     // Setting variables up for pagination
     this.hasMore = false;
     this.parsePagniation = null;
@@ -74,18 +76,21 @@ class NewsFetchService {
     url += "?" + new URLSearchParams(param).toString();
     // make reqeust and fetch data.
     try {
-      const newsItems = await fetch(url, {
-        signal: this.abortController.signal,
-        headers
-      }).then(response => {
-        if (response.headers.has("Link")) {
-          this.parsePagniation = new ParsePaginationRespnseHeaders(
-            response.headers.get("Link")
-          );
-          this.hasMore = this.parsePagniation.nextUrl ? true : false;
+      const newsItems = await super.makeRequest(
+        url,
+        {
+          signal: this.abortController.signal,
+          headers
+        },
+        response => {
+          if (response.headers.has("Link")) {
+            this.parsePagniation = new ParsePaginationRespnseHeaders(
+              response.headers.get("Link")
+            );
+            this.hasMore = this.parsePagniation.nextUrl ? true : false;
+          }
         }
-        return response.json();
-      });
+      );
       // provide the fetched records.
       return newsItems;
     } catch (exception) {
@@ -110,17 +115,12 @@ class NewsFetchService {
       Authorization: localStorage.getItem("accessToken")
     };
     const body = { id: newsId };
-    const clickCount = await fetch(NEWS_API_COUNT_UPDATE, {
+    const clickCount = await super.makeRequest(NEWS_API_COUNT_UPDATE, {
       method: "POST",
       headers,
       body: JSON.stringify(body)
-    }).then(response => {
-      if (!response.ok) {
-        throw new Error("failed to update count");
-      } else {
-        response.json();
-      }
     });
+
     return clickCount;
   }
 }

@@ -1,10 +1,12 @@
 import AuthService from "./AuthService";
+import AuthRefreshable from "./AuthRefreshable";
 
 const ALL_AGENCY_API = "/api/v1/agencies.json";
 const USER_AGENCY_API = "/api/v1/users_agencies.json";
 
-class AgencyFetchService {
+class AgencyFetchService extends AuthRefreshable {
   constructor() {
+    super();
     this.recentlyFetchedAgencies = null;
   }
   // this version of fetch depends if the user is logged in or not
@@ -14,18 +16,14 @@ class AgencyFetchService {
       ? { Authorization: AuthService.accessToken }
       : {};
     const url = AuthService.isLoggedIn() ? USER_AGENCY_API : ALL_AGENCY_API;
-    const agencies = fetch(url, { headers: headers }).then(response =>
-      response.json()
-    );
+    const agencies = await this.makeRequest(url, { headers: headers });
     return agencies;
   }
 
   // this is always fetches complete records even if any user is logged in.
   async fetchAll() {
     const headers = { Authorization: AuthService.accessToken };
-    const agencies = await fetch(ALL_AGENCY_API, { headers }).then(response =>
-      response.json()
-    );
+    const agencies = await super.makeRequest(ALL_AGENCY_API, { headers });
     this.recentlyFetchedAgencies = agencies;
     return agencies;
   }
@@ -37,14 +35,10 @@ class AgencyFetchService {
       Authorization: AuthService.accessToken,
       "Content-Type": "application/json"
     };
-    await fetch(USER_AGENCY_API, {
+    await super.makeRequest(USER_AGENCY_API, {
       headers,
       method: "POST",
       body: JSON.stringify(body)
-    }).then(response => {
-      if (!response.ok) {
-        throw response.statusText;
-      }
     });
   }
 }
