@@ -17,7 +17,7 @@ gem 'jwt-auth', '~> 5.0.1'
 # Feedzirra is for fetching and parsing RSS feeds.
 gem 'feedjira', '~> 3.1'
 # Carrierwave gem for file upload
-gem 'carrierwave', '~> 1.0'
+gem 'carrierwave', '~> 1.3'
 # React intergration
 gem 'webpacker'
 gem 'react-rails'
